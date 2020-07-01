@@ -1,0 +1,24 @@
+
+
+# The diagram is made using [websequencediagrams](https://www.websequencediagrams.com) service.
+
+# Exercise
+# 0.6: New note
+
+note over browser
+clicking 'Save' button of type "submit" is handled
+by JavaScript event handler (onsubmit).
+Note that ancestor form has no action and method
+attributes. 
+end note
+note over browser
+JS event handler prevents default behavior by `preventDefault()`,
+adds note to the notes,
+resets the input field, redraws notes,
+and initiates HTTP POST to /new_note_spa, setting request header
+and sending request with the note data
+as JSON string.
+end note
+browser->server: HTTP POST (to /new_note_spa with form data as JSON per spa.js)
+server-->>browser: JSON response ("note created")
+

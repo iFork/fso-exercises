@@ -1,0 +1,24 @@
+
+# The diagram is made using [websequencediagrams](https://www.websequencediagrams.com) service.
+
+# Exercise
+# 0.5: Single page app
+
+browser->server: HTTP GET (/spa)
+server-->>browser: HTML-code
+browser->server: HTTP GET (/main.css per link tag)
+server-->>browser: main.css
+browser->server: HTTP GET (/spa.js per script tag)
+server-->>browser: spa.js
+note over browser:  
+browser starts executing js-code  
+that requests JSON data from server  
+end note
+browser->server: HTTP GET (/data.json per spa.js)
+server-->>browser: JSON data
+note over browser:
+browser executes event handler onreadystatechange
+that renders notes to display (redrawNotes())
+and registers event handler for form submit event.
+end note
+
