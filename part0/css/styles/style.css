@@ -1,0 +1,41 @@
+
+html {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px; 
+    background-color: lightblue;
+    /* background-color: rgba(153, 153, 51, 0,3);  */
+}
+
+body {
+    width: 600px;
+    margin: 20px auto;
+    /* margin: 100px auto; */
+    background-color: lightgreen;
+    padding: 0px 20px 20px 20px;
+    border: 5px solid magenta;
+}
+
+h1 {
+    color: lightblue;
+    margin: 0;
+    padding: 20px 0;
+    text-align: center;
+    font-family: 'MuseoModerno', cursive;
+    font-size: 60px; 
+    text-shadow: 3px 6px 3px black;
+}
+
+p {
+    letter-spacing: 1px;
+}
+li {
+    line-height: 2;
+    letter-spacing: 2px;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+    width: 300px;
+    opacity: 0.7;
+}
