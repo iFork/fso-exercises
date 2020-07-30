@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import personService from './services/person';
 
 
 const PersonForm = ({newName, newNumber, setNewName, setNewNumber, 
@@ -37,27 +37,43 @@ const Filter = ({filterName, setFilterName}) => {
 
 const Person = (props) => {
     console.log("Person: props:", props);
-    const { person } = props;
+    const { person, handleDelete } = props;
     return (
         <div>
-            {person.name} {person.number}
+            {person.name} {person.number} 
+            {/* TODO: add space / margin between these inline elements */}
+            <button type="button" onClick={handleDelete}>delete</button>
         </div>
     );
 }
 
 const Persons = (props) => {
     console.log("Persons: props:", props);
-    const { persons } = props;
+    const { persons, handleDelete } = props;
     return (
         <div>
-            {persons.map(person => <Person key={person.name} person={person} />)}
+            {persons.map(person => 
+                <Person 
+                    key={person.name} 
+                    person={person}
+                    handleDelete={() => {
+                        //NOTE: 'event' argument is optional
+                        // console.log("handleDelete called w/ event", event.target);
+                        handleDelete(person.id, person.name)
+                    }
+                    }
+                />)}
         </div>
     );
 }
 
-const isDuplicate = (name, persons) => {
-    const namesArr = persons.map(person => person.name);
-    return namesArr.indexOf(name) !== -1;         
+const idOf = (name, persons) => {
+    for (const person of persons) {
+        if (person.name === name) {
+            return person.id;
+        }
+    }
+    return -1;
 }
 
 
@@ -68,32 +84,65 @@ function App() {
     const [filterName, setFilterName] = useState("")
 
     const fetchHook = () => {
-       axios
-            .get("http://localhost:3001/persons")
-            .then(response => {
-                console.log("fulfilled, response is:", response);
-                setPersons(response.data);
+        personService
+            .getAll()
+            .then(initialPersons => {
+                console.log("fulfilled, response is:", initialPersons);
+                setPersons(initialPersons);
             })
     }
     useEffect(fetchHook, [])
 
     const personsToShow = filterName 
                           ? persons.filter(person =>
-                            person.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
+                            person.name.toLowerCase()
+                              .indexOf(filterName.toLowerCase()) !== -1)
                           : persons
 
     const addPerson = (event) => {
         event.preventDefault(); 
         console.log("clicked", event.target)
-        if (!isDuplicate(newName, persons)) {
+        const idOfDuplicate = idOf(newName, persons);
+        if (idOfDuplicate === -1) {
             const newPerson = {name: newName, number: newNumber};
-            setPersons(persons.concat(newPerson));
-            setNewName("");
-            setNewNumber("");
+            personService
+                .create(newPerson)
+                .then(returnedPerson => {
+                    console.log("creation fulfilled, respose is:", 
+                                    returnedPerson);
+                    setPersons(persons.concat(returnedPerson));
+                    setNewName("");
+                    setNewNumber("");
+                })
         }
         else {
-            window.alert(`Phonebook alreeady contains an \
-                          entry for ${newName}`);   
+            if(window.confirm(`${newName} is already added to Phonebook,` 
+                    + ` replace old number with a new one?`)) {
+                const newPerson = {name: newName, number: newNumber};
+                personService
+                    .update(idOfDuplicate, newPerson)
+                    .then(returnedPerson => {
+                        console.log("update fulfilled, respose is:", 
+                                        returnedPerson);
+                        setPersons(persons.map(p => 
+                            p.id === idOfDuplicate 
+                            ? returnedPerson : p));
+                        setNewName("");
+                        setNewNumber("");
+                    })
+            }
+        }
+    }
+
+    const handleDelete = (id, name) => {
+        if (window.confirm(`Delete ${name} from contacts?`)) {
+            personService
+            .deletePerson(id)
+            .then(response => {
+                console.log("delete succeeded, response is:", response);
+                setPersons(persons.filter(p => p.id !== id));
+            })
+            .catch( () => alert("Delete failed"));
         }
     }
 
@@ -105,7 +154,7 @@ function App() {
             <PersonForm newName={newName} newNumber={newNumber} addPerson={addPerson}
                         setNewNumber={setNewNumber} setNewName={setNewName} />
             <h3>Numbers</h3>
-            <Persons persons={personsToShow} />
+            <Persons persons={personsToShow} handleDelete={handleDelete}/>
         </div>
     );
 }
