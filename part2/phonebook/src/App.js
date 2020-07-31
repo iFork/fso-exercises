@@ -1,6 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import personService from './services/person';
 
+const Notification = ({notification}) => {
+    const {message, type} = notification;
+    if(!message) {
+        return null;
+    }
+    switch (type) {
+        case 'success':
+            return (
+                <div className="notification success">
+                    {message}
+                </div>
+            );
+        case 'error':
+            return (
+                <div className="notification error">
+                    {message}
+                </div>
+            );
+        default:
+            console.log("Unknown notification type");
+            return (
+                <div className="notification">
+                    {message}
+                </div>
+            );
+    }
+}
+
+const Notifications = ({notifications}) => {
+    return (
+        <div>
+            { notifications.map(n => <Notification 
+                                        key={n.id} 
+                                        notification={n} />) }
+        </div>
+    );
+}
 
 const PersonForm = ({newName, newNumber, setNewName, setNewNumber, 
                      addPerson }) => {
@@ -36,32 +73,31 @@ const Filter = ({filterName, setFilterName}) => {
 }
 
 const Person = (props) => {
-    console.log("Person: props:", props);
+    // console.log("Person: props:", props);
     const { person, handleDelete } = props;
     return (
         <div>
             {person.name} {person.number} 
-            {/* TODO: add space / margin between these inline elements */}
-            <button type="button" onClick={handleDelete}>delete</button>
+            <button type="button" className="deleteButton"
+                onClick={handleDelete}>delete</button>
         </div>
     );
 }
 
 const Persons = (props) => {
-    console.log("Persons: props:", props);
+    // console.log("Persons: props:", props);
     const { persons, handleDelete } = props;
     return (
         <div>
             {persons.map(person => 
                 <Person 
-                    key={person.name} 
+                    key={person.id} 
                     person={person}
                     handleDelete={() => {
                         //NOTE: 'event' argument is optional
                         // console.log("handleDelete called w/ event", event.target);
                         handleDelete(person.id, person.name)
-                    }
-                    }
+                    }}
                 />)}
         </div>
     );
@@ -80,8 +116,36 @@ const idOf = (name, persons) => {
 function App() {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState("");
-    const [newNumber, setNewNumber] = useState("")
-    const [filterName, setFilterName] = useState("")
+    const [newNumber, setNewNumber] = useState("");
+    const [filterName, setFilterName] = useState("");
+    const [notifications, setNotifications] = useState([]);
+
+    //Note: useRef() a mutable object which persists over renders and
+    //does not cause re-render.
+    const lastNotificationId = useRef(0);
+
+    const addNotification = (message, type) => {
+        const newNotificationId = ++lastNotificationId.current; 
+        const newNotification = {
+            id: newNotificationId,
+            message, 
+            type
+        };
+        console.log("adding notification", type, newNotificationId, message);
+        //NOTE: use callback in setState() to avoid stale state being captured
+        //when previous state is needed for next state calculation.
+        // setNotifications(notifications.concat(newNotification))
+        setNotifications(prev => prev.concat(newNotification))
+        // console.log("notifications appended:", notifications); 
+                                        //'notifications' here is stale
+        setTimeout(() => {
+            console.log("filtering as 5s passed... pop id:", newNotificationId);
+            setNotifications(prev => prev
+                            .filter(n => n.id !== newNotificationId));
+            // console.log("new notifications:", notifications); 
+                                        //'notifications' here is stale
+        }, 5000);
+    }
 
     const fetchHook = () => {
         personService
@@ -113,6 +177,8 @@ function App() {
                     setPersons(persons.concat(returnedPerson));
                     setNewName("");
                     setNewNumber("");
+                    addNotification(`${newName} is added to contacts.`, 
+                                    'success');
                 })
         }
         else {
@@ -129,7 +195,16 @@ function App() {
                             ? returnedPerson : p));
                         setNewName("");
                         setNewNumber("");
+                        addNotification(`${newName}'s number is updated`,
+                                        'success');
                     })
+                    .catch( () => { 
+                        console.log("Update failed");
+                        addNotification(
+                            `${newName} was already removed from the server.`,
+                            'error');
+                        setPersons(persons.filter(p => p.id !== idOfDuplicate));
+                    });
             }
         }
     }
@@ -141,14 +216,25 @@ function App() {
             .then(response => {
                 console.log("delete succeeded, response is:", response);
                 setPersons(persons.filter(p => p.id !== id));
+                addNotification(`${name} is removed from contacts.`,
+                                'success');
             })
-            .catch( () => alert("Delete failed"));
+            .catch( () => { 
+                console.log("Delete failed");
+                // setErrorMessage(`${name} was already removed from the server`)
+                //Assuming rejection occurs only n case of double-deletion
+                //filtering stale item
+                setPersons(persons.filter(p => p.id !== id));
+                addNotification(`${name} was already deleted from the server`,
+                                'error');
+            });
         }
     }
 
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notifications notifications={notifications}/>
             <Filter filterName={filterName} setFilterName={setFilterName} />
             <h3> Add a new person</h3>
             <PersonForm newName={newName} newNumber={newNumber} addPerson={addPerson}
