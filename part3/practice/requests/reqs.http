@@ -1,0 +1,29 @@
+# http://localhost:3001
+# --
+Host: http://localhost:3001
+
+
+# $host = http://localhost:3001
+
+
+# --
+GET $host/api/notes/ 
+
+GET /api/notes/ 
+
+DELETE /api/notes/4
+
+DELETE $host/api/notes/4
+
+POST /api/notes
+{
+	"content": "Note posted via vial",
+	"important": "true"
+}
+
+POST /api/unknownx
+{
+	"content": "Note posted via vial",
+	"important": "true"
+}
+
