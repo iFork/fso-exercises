@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const baseUrl = "http://localhost:3001/notes";
+// json-server endpoint
+// const baseUrl = "http://localhost:3001/notes";
+// our endpoint
+const baseUrl = "http://localhost:3001/api/notes";
 const getAll = () => {
     return axios.get(baseUrl)
                 .then(response => response.data)
