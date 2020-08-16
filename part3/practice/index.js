@@ -32,6 +32,9 @@ let notes = [
 
 const app = express();
 
+//middleware to serve static pages, for our frontend
+app.use(express.static('build'));
+
 //cors middleware to allow cross-origin access from any origin
 app.use(cors());
 
