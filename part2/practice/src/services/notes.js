@@ -5,7 +5,9 @@ import axios from 'axios';
 // our local endpoint
 // const baseUrl = "http://localhost:3001/api/notes";
 // heroku endpoint
-const baseUrl = "https://young-mesa-19211.herokuapp.com/api/notes";
+// const baseUrl = "https://young-mesa-19211.herokuapp.com/api/notes";
+// endpoint when frontend and backend are in the same root
+const baseUrl = "/api/notes";
 const getAll = () => {
     return axios.get(baseUrl)
                 .then(response => response.data)
