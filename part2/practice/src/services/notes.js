@@ -2,8 +2,10 @@ import axios from 'axios';
 
 // json-server endpoint
 // const baseUrl = "http://localhost:3001/notes";
-// our endpoint
-const baseUrl = "http://localhost:3001/api/notes";
+// our local endpoint
+// const baseUrl = "http://localhost:3001/api/notes";
+// heroku endpoint
+const baseUrl = "https://young-mesa-19211.herokuapp.com/api/notes";
 const getAll = () => {
     return axios.get(baseUrl)
                 .then(response => response.data)
