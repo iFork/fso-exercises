@@ -8,8 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "echo removing build && rm -rf build && echo cd to frontend && cd ../../part2/practice && pwd && echo build frontend && npm run build --prod && echo copy build back && cp -r build $OLDPWD",
-    "deploy": "git checkout practice-notes-deploy && git merge `git subtree split -P part3/practice practice --annotate='(split) '` && git push heroku practice-notes-deploy:master",
-    "deploy:full": "git checkout practice && npm run build:ui && echo commit build to backend && git add build && git commit -m UI-build && npm run deploy",
+    "deploy": "git checkout practice-notes-deploy && echo cd to top level of the working tree for the git subtree merge && cd ../../ && git merge `git subtree split -P part3/practice practice --annotate='(split) '` && git push heroku practice-notes-deploy:master",
+    "deploy:full": "git checkout practice && npm run build:ui && echo commit build to backend && git add build && echo commit if there is a change && (git diff-index --quiet --cached HEAD || git commit -m UI-build) && echo deploying...  && npm run deploy",
     "logs:prod": "heroku logs -t"
   },
   "author": "M",
