@@ -1,0 +1,19 @@
+# Host: http://localhost:3001/api/persons
+Host: https://ancient-lowlands-07089.herokuapp.com/api/persons
+
+
+GET /
+
+POST /
+{
+    "name": "Pers Name",
+    "number": "123"
+}
+
+PUT /2
+{
+    "name": "Pers Name",
+    "number": "123"
+}
+
+DELETE /2
