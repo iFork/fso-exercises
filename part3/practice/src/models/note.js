@@ -21,9 +21,16 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
     //TODO: lookup mongoose connect error ?
 
 const noteSchema = new mongoose.Schema({
-        content: String,
-        date: Date,
-        important: Boolean
+    content: {
+        type: String,
+        required: true,
+        minlength: 5
+    },
+    date: {
+        type: Date,
+        required: true
+    },
+    important: Boolean
 });
 
 // Formatting what schema's toJSON() will return (it is called by

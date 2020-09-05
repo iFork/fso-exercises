@@ -85,24 +85,25 @@ app.put('/api/notes/:id', (req,res,next) => {
         .catch(err => next(err));
 })
 
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res, next) => {
     const body = req.body;
-    if (!body.content) {
-        return res.status(400).json({
-            error: "Content missing"
-        });   
-    }
+    // if (!body.content) {
+    //     return res.status(400).json({
+    //         error: "Content missing"
+    //     });   
+    // }
     const note = new Note({
         content: body.content,
         important: body.important || false,
         date: new Date()
-        // id: generateId()
     });
     note.save()
         .then( savedNote => {
             res.json(savedNote);
             console.log("posted:", savedNote);
         })
+        // catch validation errors
+        .catch(err => next(err));
 })
 
 
@@ -129,6 +130,10 @@ const errorHandler = (err, req, res, next) => {
     if (err.name === 'CastError') {
        return res.status(400).json({error: "Malformatted id"} );
     } 
+    if (err.name === 'ValidationError') { // or instanceof mongoose.Error.ValidationError
+        // return res.status(400).json({error: err.errors});
+        return res.status(400).json({error: err.message});
+    }
     next(err);
 }
 app.use(errorHandler);

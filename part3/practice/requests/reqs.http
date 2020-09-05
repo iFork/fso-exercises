@@ -17,7 +17,7 @@ DELETE $host/api/notes/4
 
 POST /api/notes
 {
-	"content": "Note posted via vial",
+	"content": "shrt",
 	"important": "true"
 }
 
