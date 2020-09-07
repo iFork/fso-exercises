@@ -180,6 +180,25 @@ function App() {
                     addNotification(`${newName} is added to contacts.`, 
                                     'success');
                 })
+                //are status(4xx) rejections ?
+                //NOTE: status code that falls out of the range of 2xx is
+                //rejection for axios
+                .catch(err => {
+                    console.log("Eror caught:", err); //> Error: Request failed with status code 400
+                    console.log("Eror caught toJSON:", err.toJSON()); //> 
+                    //NOTE: err object's string representation (i.e. its
+                    //toString()) does not reflect its object structure and
+                    //apparently returns its message property.
+                    //To see its object structure use err.toJSON(). In this
+                    //case you will see its `response` prop.
+                    // You can also use a global interceptor and reject only
+                    // the err.response, 
+                    // see https://github.com/axios/axios/issues/960#issuecomment-320659373 
+                    addNotification(
+                        `Cannot add to contacts. ${err.response.data.error}`,
+                        'error'
+                    );
+                })
         }
         else {
             if(window.confirm(`${newName} is already added to Phonebook,` 
@@ -198,12 +217,18 @@ function App() {
                         addNotification(`${newName}'s number is updated`,
                                         'success');
                     })
-                    .catch( () => { 
+                    .catch( (err) => { 
                         console.log("Update failed");
-                        addNotification(
-                            `${newName} was already removed from the server.`,
-                            'error');
-                        setPersons(persons.filter(p => p.id !== idOfDuplicate));
+                        if(err.response.status === 404) {
+                            addNotification(
+                                `${newName} was already removed from the server.`,
+                                'error');
+                            setPersons(persons.filter(p => p.id !== idOfDuplicate));
+                        } else {
+                            addNotification(
+                                `Cannot update contact. ${err.response.data.error}`,
+                                'error');
+                        }
                     });
             }
         }
