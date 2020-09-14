@@ -1,0 +1,20 @@
+HOST: http://localhost:3003
+
+GET /api/blogs
+
+POST /api/blogs
+{
+  "title": "Rad blog",
+  "author": "Jonathan",
+  "url": "www.com",
+  "likes": 13
+}
+
+# post fails midway, created only w/ _id, __v fields
+# due to invalid json - trailing comma
+POST /api/blogs
+{
+  "title": "Rad blog",
+  "author": "Jonathan",
+}
+
