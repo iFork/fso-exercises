@@ -1,46 +1,9 @@
 const http = require('http')
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const mongoose = require('mongoose')
+const app = require('./app');
 
-const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
+const config = require('./utils/config');
 
-const Blog = mongoose.model('Blog', blogSchema)
-
-//run as `PASS=<...> npm run dev`
-const pass = process.env.PASS;
-const MONGODB_URI = `mongodb+srv://fso:${pass}@cluster0.ubqcg.mongodb.net/bloglist-app?retryWrites=true&w=majority`
-console.log("connecting to", MONGODB_URI);
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-
-app.use(cors())
-app.use(express.json())
-
-app.get('/api/blogs', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
-})
-
-app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
-})
-
-const PORT = 3003
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+const server = http.createServer(app);
+server.listen(config.PORT, () => {
+  console.log(`Server running on port ${config.PORT}`)
 })
