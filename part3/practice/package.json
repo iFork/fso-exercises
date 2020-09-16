@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "debug": "node --inspect index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "build:ui": "echo removing build && rm -rf build && echo cd to frontend && cd ../../part2/practice && pwd && echo build frontend && npm run build --prod && echo copy build back && cp -r build $OLDPWD",
     "deploy": "git checkout practice-notes-deploy && echo cd to top level of the working tree for the git subtree merge && cd ../../ && git merge `git subtree split -P part3/practice practice --annotate='(split) '` && git push heroku practice-notes-deploy:master",
     "deploy:full": "git checkout practice && npm run build:ui && echo commit build to backend && git add build && echo commit if there is a change && (git diff-index --quiet --cached HEAD || git commit -m UI-build) && echo deploying...  && npm run deploy",
@@ -26,6 +26,10 @@
     "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
+    "jest": "^26.4.2",
     "nodemon": "^2.0.4"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
