@@ -25,9 +25,30 @@ const favoriteBlog = (blogs) => {
   // 1 > undefined // false
 }
 
+const mostBlogs = (blogs) => {
+  let authorsChart = {};
+  return blogs.reduce((topAuthor, blog) => {
+    const currentAuthor = blog.author;
+    authorsChart[currentAuthor]
+      ? authorsChart[currentAuthor] ++
+      : authorsChart[currentAuthor] = 1;
+    // console.log("authorsChart is:", authorsChart);
+    const currentAuthorBlogs = authorsChart[currentAuthor];
+    const topAuthorBlogs = topAuthor.blogs || 0;
+    if (currentAuthorBlogs > topAuthorBlogs) {
+      topAuthor = { author: currentAuthor, blogs: currentAuthorBlogs };
+      // console.log("current topAuthor:", topAuthor);
+      return topAuthor;
+    } else {
+      return topAuthor;
+    }
+  }, {})
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
 }
 
