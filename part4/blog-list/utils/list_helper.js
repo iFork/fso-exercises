@@ -43,6 +43,29 @@ const mostBlogs = (blogs) => {
       return topAuthor;
     }
   }, {})
+};
+
+const mostLikes = (blogs) => {
+  let authorsChart = {};
+  return blogs.reduce( (topAuthor, blog) => {
+    const currentAuthor = blog.author;
+    const currentLikes = blog.likes;
+    authorsChart[currentAuthor]
+      ? authorsChart[currentAuthor] += currentLikes
+      : authorsChart[currentAuthor] = currentLikes;
+    // console.log('authorsChart', authorsChart);
+    const currentAuthorTotalLikes = authorsChart[currentAuthor];
+    const topAuthorTotalLikes = topAuthor.likes || 0;
+    if (currentAuthorTotalLikes > topAuthorTotalLikes) {
+      topAuthor = { author: currentAuthor, likes: currentAuthorTotalLikes };
+      // console.log('current topAuthor', topAuthor);
+      return topAuthor;
+    } else {
+      return topAuthor;
+      // if no one has likes, return will be {}, not just first author w 0 likes
+      // Is it fine?
+    }
+  }, {} )
 }
 
 module.exports = {
@@ -50,5 +73,6 @@ module.exports = {
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 }
 
