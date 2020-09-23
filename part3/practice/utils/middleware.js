@@ -1,11 +1,13 @@
 const mongoose = require('mongoose'); // for error type checking
 
+const logger = require('../utils/logger');
+
 const requestLogger = (req, _res, next) => {
-    console.log('baseUrl   : ', req.baseUrl);
-    console.log('method    : ', req.method);
-    console.log('path      : ', req.path);
-    console.log('body      : ', req.body);
-    console.log('---');
+    logger.info('baseUrl   : ', req.baseUrl);
+    logger.info('method    : ', req.method);
+    logger.info('path      : ', req.path);
+    logger.info('body      : ', req.body);
+    logger.info('---');
     next();
 };
 const unknownEndpoint = (_req, res, _next) => {
@@ -17,7 +19,7 @@ const unknownEndpoint = (_req, res, _next) => {
 };
 
 const errorHandler = (err, _req, res, next) => {
-    console.log('error :', err.message);
+    logger.error('error :', err.message);
     if (err instanceof mongoose.Error.DocumentNotFoundError) {
         return res.status(404).json({ error: 'Not found' });
     }
