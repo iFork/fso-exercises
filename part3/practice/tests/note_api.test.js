@@ -1,9 +1,32 @@
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 
+const Note = require('../models/note');
 const app = require('../app');
 
 const api = supertest(app);
+
+const initialNotes = [
+    {
+        content: 'Easy note',
+        important: true,
+    },
+    {
+        content: 'Easy javaScript',
+        important: true,
+    },
+];
+
+beforeEach(async () => {
+    // Note: Remember `await`
+    await Note.deleteMany({});
+
+    let newNote = new Note(initialNotes[0]);
+    await newNote.save();
+
+    newNote = new Note(initialNotes[1]);
+    await newNote.save();
+})
 
 describe('note api', () => {
     test('response is json', async () => {
@@ -25,13 +48,14 @@ describe('note api', () => {
         // Jest (or/and async/await ???) seems to instrument this callback
         // somehow (with // promises?)
     });
-    test('response has 1 note', async () => {
+    test('all notes are returned', async () => {
         const response = await api.get('/api/notes');
-        return expect(response.body).toHaveLength(1);
+        return expect(response.body).toHaveLength(initialNotes.length);
     });
-    test('content of 1st note', async () => {
+    test('contains given note', async () => {
         const response = await api.get('/api/notes');
-        return expect(response.body[0].content).toBe('Easy note');
+        const contents = response.body.map((note) => note.content);
+        return expect(contents).toContain('Easy note');
     });
 
     // to fix 'Jest did not exit one second after the test run has completed.' error

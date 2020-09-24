@@ -11,7 +11,6 @@ const noteSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        required: true,
     },
     important: Boolean,
 });
