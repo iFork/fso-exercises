@@ -29,6 +29,7 @@ beforeEach(async () => {
 });
 
 describe('note api', () => {
+    // get route
     test('response is json', async () => {
         // w/o async/await this will not fail
         // when it should fail, since .expect()s will not get a chance to run
@@ -57,6 +58,62 @@ describe('note api', () => {
         const contents = response.body.map((note) => note.content);
         return expect(contents).toContain('Easy note');
     });
+
+    // post route
+    test('valid note can be added', async () => {
+        const note = { 
+            content: 'New note added',
+            important: true,
+        };
+        // Note: Remember we are testing from front-end, mongoose model is not
+        // available here! just a json! Therefore we are using `supertest`
+        // const noteObj = new Note(note);
+        // const response = await noteObj.save();
+        // const notesAtEnd = await Note.find({});
+        //
+        // Post and assert posted note using supertest
+        await api
+            .post('/api/notes')
+            .send(note) // toJSON?
+            .type('json')
+            .accept('json')
+
+            .expect(200)
+            .expect('Content-Type', /json/);
+
+        const response = await api.get('/api/notes');
+        const notesAtEnd = response.body; // response json parsed by superagent
+        // (of supertest)
+        const contentsAtEnd = notesAtEnd.map(n => n.content);
+
+        expect(notesAtEnd).toHaveLength(initialNotes.length + 1);
+        expect(contentsAtEnd).toContain('New note added');
+    });
+
+    test('cannot add invalid note', async () => {
+        const invalidNote = {
+            important: true,
+        };
+
+        await api
+            .post('/api/notes')
+            .send(invalidNote)
+            .type('json')
+            // .accept('json')
+
+            .expect(400);
+            // .expect('Content-Type', /json/);
+
+        const response = await api.get('/api/notes');
+        const notesAtEnd = response.body;
+
+        expect(notesAtEnd).toHaveLength(initialNotes.length);
+    });
+
+    //     TODO: yet to test
+    // .get('/:id', (req, res, next) => {
+    // .delete('/:id', (req, res, next) => {
+    // .put('/:id', (req, res, next) => {
 
     // to fix 'Jest did not exit one second after the test run has completed.' error
     afterAll(() => {
