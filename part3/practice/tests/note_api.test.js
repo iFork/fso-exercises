@@ -26,7 +26,7 @@ beforeEach(async () => {
 
     newNote = new Note(initialNotes[1]);
     await newNote.save();
-})
+});
 
 describe('note api', () => {
     test('response is json', async () => {
@@ -35,7 +35,7 @@ describe('note api', () => {
         await api
             .get('/api/notes')
             .expect(200)
-            .expect('Content-Type', /json/)
+            .expect('Content-Type', /json/);
             // .end();
         // Note: Got error when I have async/await w/ end():
         // > both .end() and .then() were called. Never call

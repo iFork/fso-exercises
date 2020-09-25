@@ -2,11 +2,12 @@ const notesRouter = require('express').Router();
 const Note = require('../models/note');
 const logger = require('../utils/logger');
 
-notesRouter.get('/', (_req, res) => {
-    Note.find({})
-        .then((notes) => {
-            res.json(notes);
-        });
+notesRouter.get('/', async (_req, res) => {
+    const notes = await Note.find({});
+    res.json(notes);
+    // res.json(notes.map((note) => note.toJSON()));
+    // TODO: To-Check: Do we need the last line or in any case toJSON is called
+    // implicitly behind res.json() ?
 });
 
 notesRouter.get('/:id', (req, res, next) => {
