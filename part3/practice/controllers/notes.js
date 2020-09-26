@@ -54,7 +54,7 @@ notesRouter.put('/:id', (req, res, next) => {
         .catch((err) => next(err));
 });
 
-notesRouter.post('/', (req, res, next) => {
+notesRouter.post('/', async (req, res, next) => {
     const { body } = req;
     // if (!body.content) {
     //     return res.status(400).json({
@@ -66,13 +66,14 @@ notesRouter.post('/', (req, res, next) => {
         important: body.important || false,
         date: new Date(),
     });
-    note.save()
-        .then((savedNote) => {
-            res.json(savedNote);
-            logger.info('posted:', savedNote);
-        })
+    const savedNote = await note.save();
+    try {
+        res.json(savedNote);
+        logger.info('posted:', savedNote);
+    } catch (err) {
         // catch validation errors
-        .catch((err) => next(err));
+        next(err);
+    }
 });
 
 module.exports = notesRouter;
