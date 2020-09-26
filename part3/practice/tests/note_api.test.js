@@ -3,28 +3,27 @@ const mongoose = require('mongoose');
 
 const Note = require('../models/note');
 const app = require('../app');
+const helper = require('./test_helper');
 
 const api = supertest(app);
-
-const initialNotes = [
-    {
-        content: 'Easy note',
-        important: true,
-    },
-    {
-        content: 'Easy javaScript',
-        important: true,
-    },
-];
 
 beforeEach(async () => {
     // Note: Remember `await`
     await Note.deleteMany({});
 
-    let newNote = new Note(initialNotes[0]);
+    // NOTE: puting async callback in forEach() gets
+    // unreliable / erroneous results.
+    // Due to it, 1st test passed but 2nd test sometimes passed
+    // (when I added console.log() lines), sometimes no,
+    // and each time resultant state may differ.
+    //
+    // helper.initialNotes.forEach(async (note) => {
+    //     const newNote = new Note(note);
+    //     await newNote.save();
+    // });
+    let newNote = new Note(helper.initialNotes[0]);
     await newNote.save();
-
-    newNote = new Note(initialNotes[1]);
+    newNote = new Note(helper.initialNotes[1]);
     await newNote.save();
 });
 
@@ -37,11 +36,12 @@ describe('note api', () => {
             .get('/api/notes')
             .expect(200)
             .expect('Content-Type', /json/);
-            // .end();
+        // .end();
+        //
         // Note: Got error when I have async/await w/ end():
         // > both .end() and .then() were called. Never call
         // > .end() if you use promises
-        // TODO: ToExplain: But in supertest readme we got above example
+        // TODO: To-Explain: But in supertest readme we got above example
         // for vanilla JS - without async/await.
         // Here, when we have .end() w/o async/await we get another error:
         // > TypeError: Cannot read property 'call' of undefined, this test passes
@@ -50,18 +50,22 @@ describe('note api', () => {
         // somehow (with // promises?)
     });
     test('all notes are returned', async () => {
-        const response = await api.get('/api/notes');
-        return expect(response.body).toHaveLength(initialNotes.length);
+        const notes = await helper.notesInDb();
+        // console.log('all notes', notes);
+        expect(notes).toHaveLength(helper.initialNotes.length);
     });
     test('contains given note', async () => {
-        const response = await api.get('/api/notes');
-        const contents = response.body.map((note) => note.content);
-        return expect(contents).toContain('Easy note');
+        const notes = await helper.notesInDb();
+        // NOTE: Here issue was unreliable db state due to async callback
+        // in forEach() of beforeEach()
+        // console.log('notes', notes);
+        const contents = await notes.map((n) => n.content);
+        expect(contents).toContain('Easy note');
     });
 
     // post route
     test('valid note can be added', async () => {
-        const note = { 
+        const note = {
             content: 'New note added',
             important: true,
         };
@@ -81,12 +85,10 @@ describe('note api', () => {
             .expect(200)
             .expect('Content-Type', /json/);
 
-        const response = await api.get('/api/notes');
-        const notesAtEnd = response.body; // response json parsed by superagent
-        // (of supertest)
-        const contentsAtEnd = notesAtEnd.map(n => n.content);
+        const notesAtEnd = await helper.notesInDb();
+        const contentsAtEnd = notesAtEnd.map((n) => n.content);
 
-        expect(notesAtEnd).toHaveLength(initialNotes.length + 1);
+        expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1);
         expect(contentsAtEnd).toContain('New note added');
     });
 
@@ -102,15 +104,14 @@ describe('note api', () => {
             // .accept('json')
 
             .expect(400);
-            // .expect('Content-Type', /json/);
+        // .expect('Content-Type', /json/);
 
-        const response = await api.get('/api/notes');
-        const notesAtEnd = response.body;
+        const notesAtEnd = await helper.notesInDb();
 
-        expect(notesAtEnd).toHaveLength(initialNotes.length);
+        expect(notesAtEnd).toHaveLength(helper.initialNotes.length);
     });
 
-    //     TODO: yet to test
+    // TODO: yet to test
     // .get('/:id', (req, res, next) => {
     // .delete('/:id', (req, res, next) => {
     // .put('/:id', (req, res, next) => {
