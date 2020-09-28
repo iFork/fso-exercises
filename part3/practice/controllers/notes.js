@@ -56,19 +56,18 @@ notesRouter.put('/:id', (req, res, next) => {
 
 notesRouter.post('/', async (req, res, next) => {
     const { body } = req;
-    // if (!body.content) {
-    //     return res.status(400).json({
-    //         error: "Content missing"
-    //     });
-    // }
     const note = new Note({
         content: body.content,
         important: body.important || false,
         date: new Date(),
     });
-    const savedNote = await note.save();
     try {
-        res.json(savedNote);
+        // NOTE: Pay ATTENTION that try block covers all lines that may throw.
+        // I had ...note.save() line outside of try block and my test failed
+        // due to unhandled exception from save() validators !!
+        // instead of passing, as throwing was a correct behavior in this test.
+        const savedNote = await note.save();
+        res.json(savedNote.toJSON());
         logger.info('posted:', savedNote);
     } catch (err) {
         // catch validation errors
