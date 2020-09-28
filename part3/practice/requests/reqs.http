@@ -11,6 +11,8 @@ Host: http://localhost:3001
 
 GET /api/notes/ 
 
+GET /api/notes/5f71dccfaa7975798aa8f046 
+
 DELETE /api/notes/4
 
 DELETE $host/api/notes/4

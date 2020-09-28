@@ -98,6 +98,9 @@ describe('note api', () => {
         };
 
         await api
+            // NOTE: When path has typo (per supertest),
+            // like missing '/' at the beginning
+            // we get ERROR `connect ECONNREFUSED 127.0.0.1:80`
             .post('/api/notes')
             .send(invalidNote)
             .type('json')
@@ -111,9 +114,41 @@ describe('note api', () => {
         expect(notesAtEnd).toHaveLength(helper.initialNotes.length);
     });
 
-    // TODO: yet to test
-    // .get('/:id', (req, res, next) => {
-    // .delete('/:id', (req, res, next) => {
+    // route .get '/:id'
+    test('view specific note', async () => {
+        // get a note to use its id
+        const notesAtStart = await helper.notesInDb();
+        const noteToView = notesAtStart[0];
+
+        // Here we get both response and use supertest assertions
+        const response = await api.get(`/api/notes/${noteToView.id}`) // ;
+        // response
+        // NOTE: we chain assertions immediately
+        // since they do not change object returned by get()
+            .expect(200)
+            .expect('Content-Type', /json/);
+
+        expect(response.body).toEqual(noteToView);
+    });
+
+    // route delete '/:id'
+    test('delete specific note', async () => {
+        // get a note to use its id for deletion
+        const notesAtStart = await helper.notesInDb();
+        const noteToDelete = notesAtStart[0];
+
+        // verify response
+        await api
+            .delete(`/api/notes/${noteToDelete.id}`)
+            .expect(204);
+
+        // verify deletion in db
+        const notesAtEnd = await helper.notesInDb();
+        expect(notesAtEnd).toHaveLength(notesAtStart.length - 1);
+        expect(notesAtEnd).not.toContainEqual(noteToDelete);
+    });
+
+    // Remaining routes to test:
     // .put('/:id', (req, res, next) => {
 
     // to fix 'Jest did not exit one second after the test run has completed.' error
