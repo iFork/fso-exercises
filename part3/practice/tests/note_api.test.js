@@ -21,10 +21,12 @@ beforeEach(async () => {
     //     const newNote = new Note(note);
     //     await newNote.save();
     // });
-    let newNote = new Note(helper.initialNotes[0]);
-    await newNote.save();
-    newNote = new Note(helper.initialNotes[1]);
-    await newNote.save();
+
+    const noteObjects = helper.initialNotes
+        .map((note) => new Note(note));
+    const promiseArray = noteObjects
+        .map(/* async */ (noteObj) => noteObj.save());
+    await Promise.all(promiseArray);
 });
 
 describe('note api', () => {
