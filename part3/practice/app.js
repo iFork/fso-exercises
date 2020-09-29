@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 
 const express = require('express');
+require('express-async-errors'); // this patches 'express' lib to drop the need
+// for try/catch blocks in express routers which use async callbacks. This will
+// pass errors to error handling middleware without us calling next(error) in a
+// catch block.
 const cors = require('cors');
 const mongoose = require('mongoose');
 

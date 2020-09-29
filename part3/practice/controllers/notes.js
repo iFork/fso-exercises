@@ -11,30 +11,21 @@ notesRouter.get('/', async (_req, res) => {
 });
 
 notesRouter.get('/:id', async (req, res, next) => {
-    // const id = Number(req.params.id);
     const { id } = req.params;
     logger.info('id to LU:', id);
-    try {
-        const note = await Note.findById(id)
-            .orFail(); // w/o callback will throw a DocumentNotFoundError
-        // NOTE: use orFail() to avoid 'null' or '[]' result check
-        res.json(note);
-    } catch (e) {
-        next(e);
-    }
+    const note = await Note.findById(id)
+        .orFail(); // w/o callback will throw a DocumentNotFoundError
+    // NOTE: use orFail() to avoid 'null' or '[]' result check
+    res.json(note);
 });
 
 notesRouter.delete('/:id', async (req, res, next) => {
     const { id } = req.params;
-    try {
-        const deletedNote = await Note.findByIdAndRemove(id);
-        if (deletedNote) {
-            return res.status(204).end();
-        }
-        return res.status(404).end(); // use better status code
-    } catch (e) {
-        return next(e);
+    const deletedNote = await Note.findByIdAndRemove(id);
+    if (deletedNote) {
+        return res.status(204).end();
     }
+    return res.status(404).end(); // use better status code
 });
 
 notesRouter.put('/:id', (req, res, next) => {
@@ -58,18 +49,9 @@ notesRouter.post('/', async (req, res, next) => {
         important: body.important || false,
         date: new Date(),
     });
-    try {
-        // NOTE: Pay ATTENTION that try block covers all lines that may throw.
-        // I had ...note.save() line outside of try block and my test failed
-        // due to unhandled exception from save() validators !!
-        // instead of passing, as throwing was a correct behavior in this test.
-        const savedNote = await note.save();
-        res.json(savedNote.toJSON());
-        logger.info('posted:', savedNote);
-    } catch (err) {
-        // catch validation errors
-        next(err);
-    }
+    const savedNote = await note.save();
+    res.json(savedNote.toJSON());
+    logger.info('posted:', savedNote);
 });
 
 module.exports = notesRouter;
