@@ -10,34 +10,31 @@ notesRouter.get('/', async (_req, res) => {
     // implicitly behind res.json() ?
 });
 
-notesRouter.get('/:id', (req, res, next) => {
+notesRouter.get('/:id', async (req, res, next) => {
     // const id = Number(req.params.id);
     const { id } = req.params;
     logger.info('id to LU:', id);
-    // const note = notes.find(note => note.id === id);
-    Note.findById(id)
-        .orFail() // w/o callback will throw a DocumentNotFoundError
-        .then((note) => {
-            // NOTE: use orFail() to avoid 'null' or '[]' result check
-            res.json(note);
-            // if (note) res.json(note);
-            // // if not found, find returns null, not rejected promise
-            // else res.status(404).end();
-        })
-        .catch((err) => next(err));
+    try {
+        const note = await Note.findById(id)
+            .orFail(); // w/o callback will throw a DocumentNotFoundError
+        // NOTE: use orFail() to avoid 'null' or '[]' result check
+        res.json(note);
+    } catch (e) {
+        next(e);
+    }
 });
 
-notesRouter.delete('/:id', (req, res, next) => {
+notesRouter.delete('/:id', async (req, res, next) => {
     const { id } = req.params;
-    // notes = notes.filter(note => note.id !== id);
-    Note.findByIdAndRemove(id)
-        .then((deletedNote) => {
-            if (deletedNote) {
-                return res.status(204).end();
-            }
-            return res.status(404).end(); // use better status code
-        })
-        .catch((err) => next(err));
+    try {
+        const deletedNote = await Note.findByIdAndRemove(id);
+        if (deletedNote) {
+            return res.status(204).end();
+        }
+        return res.status(404).end(); // use better status code
+    } catch (e) {
+        return next(e);
+    }
 });
 
 notesRouter.put('/:id', (req, res, next) => {
