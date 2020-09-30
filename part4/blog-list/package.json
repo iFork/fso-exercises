@@ -6,12 +6,16 @@
   "scripts": {
     "start": "node index.js",
     "dev": "npx nodemon index.js",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "lint": "eslint ."
   },
   "author": "M",
   "license": "ISC",
   "devDependencies": {
     "dotenv": "^8.2.0",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
     "jest": "^26.4.2",
     "nodemon": "^2.0.4"
   },
