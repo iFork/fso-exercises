@@ -31,6 +31,11 @@ describe('blog api', () => {
     const blogs = await helper.blogsInDb();
     expect(blogs).toHaveLength(helper.initialBlogs.length);
   });
+  test('blog has id prop', async () => {
+    const blogs = await helper.blogsInDb();
+    const blog = blogs[0];
+    expect(blog.id).toBeDefined();
+  });
 });
 
 // Note: close db connectio to avoid jest error :
