@@ -60,7 +60,7 @@ describe('blog api', () => {
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1);
     expect(blogsAtEnd).toContainEqual(response.body);
   });
-  test.only('default likes to 0 if prop is missing', async () => {
+  test('default likes to 0 if prop is missing', async () => {
     // post blog with missing likes prop
     const blog = {
       title: 'Blog misses likes',
@@ -81,6 +81,32 @@ describe('blog api', () => {
     expect(blogReturned.likes).toBe(0);
     // verify db
     expect(blogsAtEnd).toContainEqual({ ...blog, id: blogId, likes: 0 });
+  });
+  test('cannot create blogs missing title prop', async () => {
+    // create, post invalid note
+    const blog = {
+      author: 'Bob Blogger',
+      url: 'https://bobo',
+    };
+    // verify response status is 400
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .type('json')
+      .expect(400);
+  });
+  test('cannot create blogs missing url prop', async () => {
+    // create, post invalid note
+    const blog = {
+      title: 'Blog misses likes',
+      author: 'Bob Blogger',
+    };
+    // verify response status is 400
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .type('json')
+      .expect(400);
   });
 });
 

@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const blogSchema = mongoose.Schema({
-  title: String,
+  title: { type: String, required: [true, '{PATH} is required'] },
+  // title: { type: String, required: '{PATH} is required' },
   author: String,
-  url: String,
+  url: { type: String, required: [true, '{PATH} is required'] },
   likes: { type: Number, default: 0 },
 });
 

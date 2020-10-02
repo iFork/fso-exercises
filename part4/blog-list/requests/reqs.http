@@ -10,6 +10,14 @@ POST /api/blogs
   "likes": 13
 }
 
+# invalid blog
+POST /api/blogs
+{
+  "author": "Jonathan",
+  "url": "www.com",
+  "likes": 13
+}
+
 # post fails midway, created only w/ _id, __v fields
 # due to invalid json - trailing comma
 POST /api/blogs
