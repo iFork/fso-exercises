@@ -60,6 +60,28 @@ describe('blog api', () => {
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1);
     expect(blogsAtEnd).toContainEqual(response.body);
   });
+  test.only('default likes to 0 if prop is missing', async () => {
+    // post blog with missing likes prop
+    const blog = {
+      title: 'Blog misses likes',
+      author: 'Bob Blogger',
+      url: 'https://bobo',
+    };
+
+    const response = await api
+      .post('/api/blogs')
+      .send(blog)
+      .type('json')
+      .expect(201);
+
+    const blogReturned = response.body;
+    const blogId = blogReturned.id;
+    const blogsAtEnd = await helper.blogsInDb();
+    // verify response
+    expect(blogReturned.likes).toBe(0);
+    // verify db
+    expect(blogsAtEnd).toContainEqual({ ...blog, id: blogId, likes: 0 });
+  });
 });
 
 // Note: close db connectio to avoid jest error :
