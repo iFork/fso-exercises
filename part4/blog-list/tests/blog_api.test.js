@@ -36,6 +36,30 @@ describe('blog api', () => {
     const blog = blogs[0];
     expect(blog.id).toBeDefined();
   });
+  test('a new blog can be added', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+
+    // create a new blog obj, post
+    const blog = {
+      title: 'First blog ti',
+      author: 'Bob Blogger',
+      url: 'https://bobo',
+      likes: 3,
+    };
+
+    const response = await api
+      .post('/api/blogs')
+      .send(blog)
+      .type('json')
+      .expect(201);
+
+    // verify response matches what has been posted
+    expect(response.body).toMatchObject(blog);
+    // verify count increase, inclusion in db after post
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1);
+    expect(blogsAtEnd).toContainEqual(response.body);
+  });
 });
 
 // Note: close db connectio to avoid jest error :
