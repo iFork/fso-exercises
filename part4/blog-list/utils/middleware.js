@@ -6,6 +6,13 @@ const errorHandler = (err, _req, res, next) => {
   if (err.name === 'ValidationError') {
     res.status(400).json({ error: err.message });
   }
+  if (err.name === 'DocumentNotFoundError') {
+    res.status(404).json({ error: err.message });
+  }
+  if (err.name === 'CastError') {
+    res.status(400).json({ error: err.message });
+  }
+
   // NOTE: in case of validation error,
   // next() produces response w status code 404 and an html with e.g. 'Cannot
   // Post', while

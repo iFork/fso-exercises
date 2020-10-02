@@ -26,3 +26,4 @@ POST /api/blogs
   "author": "Jonathan",
 }
 
+DELETE /api/blogs/5f778fd50314aa0c44fca91c

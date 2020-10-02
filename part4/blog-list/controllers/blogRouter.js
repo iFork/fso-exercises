@@ -16,4 +16,12 @@ blogRouter.post('/', async (request, response, next) => {
   return response.status(201).json(saveResult);
 });
 
+blogRouter.delete('/:id', async (request, response, next) => {
+  const blogId = request.params.id;
+  // or not use 404 code (per errorHandler middleware when findAndDelete()
+  // fails (.orFail()), maybe 204 code is sufficient ?
+  await Blog.findByIdAndDelete(blogId).orFail(); // no need to .exec() w await too
+  response.status(204).send();
+});
+
 module.exports = blogRouter;
