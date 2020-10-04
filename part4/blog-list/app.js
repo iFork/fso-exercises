@@ -11,6 +11,7 @@ const app = express();
 const cors = require('cors');
 
 console.log('connecting to', config.MONGODB_URI);
+mongoose.set('useFindAndModify', false);
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

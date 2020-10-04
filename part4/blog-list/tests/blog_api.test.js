@@ -124,6 +124,81 @@ describe('blog api when there are some initial blogs', () => {
       expect(blogsAtEnd).not.toContainEqual(blog);
     });
   });
+
+  describe('update a blog', () => {
+    test('update a blog w valid id', async () => {
+      // get a valid id
+      const blogsAtStart = await helper.blogsInDb();
+      const blog = blogsAtStart[0];
+      const blogId = blog.id;
+      const updatedLikes = blog.likes + 1;
+      // blog.likes = updatedLikes;
+      const updatedBlog = { ...blog, likes: updatedLikes };
+      const responseOfPut = await api
+        .put(`/api/blogs/${blogId}`)
+        .send(updatedBlog)
+        .type('json')
+        .expect(200)
+        .expect('Content-Type', /json/);
+      // verify response, db state
+      const blogInResponse = responseOfPut.body;
+      expect(blogInResponse.likes).toBe(updatedLikes);
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd).toContainEqual(updatedBlog);
+    });
+    test('partial update request updates partially', async () => {
+      // get a valid id
+      const blogsAtStart = await helper.blogsInDb();
+      const blog = blogsAtStart[0];
+      const blogId = blog.id;
+      const updatedLikes = blog.likes + 1;
+      // blog.likes = updatedLikes;
+      const blogPatch = { likes: updatedLikes };
+      const responseOfPut = await api
+        .put(`/api/blogs/${blogId}`)
+        .send(blogPatch)
+        .type('json')
+        .expect(200)
+        .expect('Content-Type', /json/);
+      // verify response, db state
+      const blogInResponse = responseOfPut.body;
+      expect(blogInResponse.likes).toBe(updatedLikes);
+      const blogsAtEnd = await helper.blogsInDb();
+      const updatedBlog = blogsAtEnd.find((b) => b.id === blogId);
+      expect(updatedBlog.likes).toBe(updatedLikes);
+    });
+    test('attempt to overwrite _id is handled', async () => {
+      // get a blog and invalid id to patch with
+      const blogsAtStart = await helper.blogsInDb();
+      const blog = blogsAtStart[0];
+      const blogId = blog.id;
+      const invalidId = await helper.getInvalidId();
+      const blogPatch = { _id: invalidId };
+      // console.log('blog', blog, 'patch', blogPatch);
+      await api
+        .put(`/api/blogs/${blogId}`)
+        .send(blogPatch)
+        .type('json')
+        .expect(500) // since this falls under generic 'MongoError' category
+        .expect('Content-Type', /json/);
+      // verify response, db state
+      const blogsAtEnd = await helper.blogsInDb();
+      // const updatedBlog = blogsAtEnd.find((b) => b.id === blogId);
+      // expect(updatedBlog).toBeEqual(blog);
+      expect(blogsAtEnd).toContainEqual(blog);
+    });
+    test('cannot update a blog w invalid id', async () => {
+      // get an invalid id
+      const invalidId = await helper.getInvalidId();
+      const blogPatch = { author: 'Author Nothinger' };
+      await api
+        .put(`/api/blogs/${invalidId}`)
+        .send(blogPatch)
+        .type('json')
+        .expect(404)
+        .expect('Content-Type', /json/);
+    });
+  });
 });
 
 // Note: close db connectio to avoid jest error :

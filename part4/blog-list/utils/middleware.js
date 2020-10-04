@@ -12,6 +12,10 @@ const errorHandler = (err, _req, res, next) => {
   if (err.name === 'CastError') {
     res.status(400).json({ error: err.message });
   }
+  if (err.name === 'MongoError') {
+    // e.g. thrown when trying to overwrite `_id` field which is immutable
+    res.status(500).json({ error: err.message });
+  }
 
   // NOTE: in case of validation error,
   // next() produces response w status code 404 and an html with e.g. 'Cannot

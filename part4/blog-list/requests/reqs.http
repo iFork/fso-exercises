@@ -27,3 +27,24 @@ POST /api/blogs
 }
 
 DELETE /api/blogs/5f778fd50314aa0c44fca91c
+
+GET /api/blogs
+
+PUT /api/blogs/5f7857157eb03871f8adf170
+{
+    "author": "Bob Blogger",
+    "id": "5f7857157eb03871f8adf170",
+    "likes": 5,
+    "title": "First blog ti",
+    "url": "https://bobo"
+}
+
+
+GET /api/blogs
+
+PUT /api/blogs/5f7991fc65e9b79148876f18
+{
+    "_id": "5f7857157eb03871f8adf170",
+    "id": "0000",
+    "INVALKEY": "0000"
+}
