@@ -11,9 +11,14 @@ const mongoose = require('mongoose');
 const config = require('./utils/config');
 const logger = require('./utils/logger');
 const notesRouter = require('./controllers/notes');
+const usersRouter = require('./controllers/users');
 const middleware = require('./utils/middleware');
 
 logger.info('connecting to', config.MONGODB_URI);
+
+// global configs for mongoose
+// to settle deprecation warnings
+mongoose.set('useFindAndModify', false);
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => logger.info('connected to MongoDB'))
@@ -29,6 +34,7 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 
 app.use('/api/notes', notesRouter);
+app.use('/api/users', usersRouter);
 
 app.get('/', (_req, res) => {
     res.send('<h1>Hello World</h1>');

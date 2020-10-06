@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-// global configs for mongoose
-// to settle deprecation warnings
-mongoose.set('useFindAndModify', false);
 
 const noteSchema = new mongoose.Schema({
     content: {
@@ -13,6 +10,12 @@ const noteSchema = new mongoose.Schema({
         type: Date,
     },
     important: Boolean,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        // NOTE: Q: Circualar dependency ?
+        // A: Yes, therefore here I use model name instead of a model class
+    }
 });
 
 // Formatting what schema's toJSON() will return (it is called by
