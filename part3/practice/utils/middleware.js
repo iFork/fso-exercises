@@ -30,6 +30,10 @@ const errorHandler = (err, _req, res, next) => {
         // return res.status(400).json({error: err.errors});
         return res.status(400).json({ error: err.message });
     }
+    if (err.name === 'userIdError') {
+        // return res.status(400).json({error: err.errors});
+        return res.status(400).json({ error: err.message });
+    }
     return next(err);
 };
 

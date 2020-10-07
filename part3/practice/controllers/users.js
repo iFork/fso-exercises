@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 usersRouter.get('/', async (_req, res, _next) => {
-    const users = await User.find({});
+    const users = await User
+        .find({})
+        .populate('notes', { content: 1, important: 1 });
     res.json(users);
 });
 
@@ -17,6 +19,11 @@ usersRouter.post('/', async (req, res, _next) => {
         passwordHash,
     });
     const savedUser = await userObj.save();
+    // NOTE: to populate existing document use
+    // .populate(...).execPopulate()
+    await savedUser
+        .populate('notes', { content: 1, important: 1 })
+        .execPopulate();
     // console.log('savedUser', savedUser);
     res.status(201).json(savedUser);
 });

@@ -13,6 +13,11 @@ GET /api/notes/
 
 GET /api/notes/5f71dccfaa7975798aa8f046 
 
+PUT /api/notes/5f7cd0f6b347aca793bb73a8
+{
+    "content": "Note of a user updated"
+}
+
 DELETE /api/notes/4
 
 DELETE $host/api/notes/4
@@ -29,3 +34,21 @@ POST /api/unknownx
 	"important": "true"
 }
 
+POST /api/users
+{
+    "username": "roota2",
+    "password": "pass",
+    "name": "Bob"
+}
+
+GET /api/users
+
+POST /api/notes
+{
+    "content": "Note of a user",
+    "userId": "5f7cc6d904509cdfabd6952f"
+}
+
+POST /api/notes
+{
+}

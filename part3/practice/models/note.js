@@ -15,7 +15,15 @@ const noteSchema = new mongoose.Schema({
         ref: 'User',
         // NOTE: Q: Circualar dependency ?
         // A: Yes, therefore here I use model name instead of a model class
-    }
+        required: true,
+        // NOTE: simple `required: true` does not throw a
+        // ValidationError. SINCE in the body we want
+        // `userId` prop to be presnet (not `user`), which then we
+        // want to map to `user`.
+        //
+        // When `userId` is missing we get other type of error
+        // (TypeError when reading _id of not found user)
+    },
 });
 
 // Formatting what schema's toJSON() will return (it is called by
