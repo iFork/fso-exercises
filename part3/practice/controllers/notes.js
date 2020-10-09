@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const notesRouter = require('express').Router();
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Note = require('../models/note');
 const User = require('../models/user');
 const logger = require('../utils/logger');
@@ -48,24 +49,42 @@ notesRouter.put('/:id', (req, res, next) => {
         .catch((err) => next(err));
 });
 
+const getTokenFrom = (request) => {
+    const authorization = request.get('Authorization');
+    if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+        return null;
+    }
+    return authorization.substring(7); // drop 'Bearer '
+};
+
 notesRouter.post('/', async (req, res, _next) => {
     const { body } = req;
-    // user
+    const token = getTokenFrom(req);
+    if (!token) {
+        // TODO: change to  throw error ?
+        return res.status(401).json({ error: 'Token is missing or is invalid' });
+    }
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+    // TODO: Do we need to make above async by adding callback ?
+    const { username, id } = decodedToken;
+    if (!username || !id) {
+        // TODO: change to  throw error ?
+        return res.status(401).json({ error: 'Token is invalid' });
+    }
     const user = await User
-        .findById(body.userId)
+        .findById(id)
         .orFail(() => {
-            const e = new Error('Valid userId is required');
+            const e = new Error('Valid user Id is required');
             e.name = 'userIdError';
             return e;
         });
-        // we need this to make `userId` required
-        // BUT instead of DocumentNotFoundError we want more
+        // instead of DocumentNotFoundError we want more
         // specific error
     const note = new Note({
         content: body.content,
         important: body.important || false,
         date: new Date(),
-        user: user._id,
+        user: id,
     });
     const savedNote = await note.save();
     await savedNote
@@ -74,7 +93,7 @@ notesRouter.post('/', async (req, res, _next) => {
     user.notes = user.notes.concat(savedNote._id);
     await user.save();
     logger.info('posted:', savedNote);
-    res.json(savedNote.toJSON());
+    return res.json(savedNote.toJSON());
 });
 
 module.exports = notesRouter;

@@ -52,3 +52,23 @@ POST /api/notes
 POST /api/notes
 {
 }
+
+# login
+
+POST /api/login
+{
+    "username": "roota2",
+    "password": "pass"
+}
+
+# authorization for post note
+
+# user: roota2: "id": "5f7cc7fee2b400e3645451b2",
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3RhMiIsImlkIjoiNWY3Y2M3ZmVlMmI0MDBlMzY0NTQ1MWIyIiwiaWF0IjoxNjAyMjM5MDk3fQ.eVg3kDv43pqQ5h9O-cfUnP33m5p2Nru-7NkWMkzNymI
+
+
+POST /api/notes
+{
+    "content": "Note of a user"
+}
+
