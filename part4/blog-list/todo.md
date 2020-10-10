@@ -1,0 +1,47 @@
+TODO:
+# 4.15
+create new users
+  + model
+    + username, name, passwordHash
+    + toJSON - remove passwordHash
+  + User controller
+    + POST api/users
+      + dependency bcrypt
+      + bcrypt passwordHash
+    + GET api/users
+    + Hook up to app
+
+4.16
+
+user schematype validation
+  username:
+    required, minlength 3
+    unique (use mongoose unique validator)
+  password:
+    required, minlength 3
+    NOTE: password validation is outside of mongoose, in a router since db schema does not include it
+  error code and message
+    400? bad request, reason message (path required, not unique, etc.)
+  test
+    invlid users cannot be created, verify error code, msg
+
+4.17
+
+blog model
+  user (author)
+blog post
+  arbitrary user (found first) is designated as author
+  populate user
+blog get /
+  populate user
+user model
+  blogs []
+user get /
+  populate blog
+  
+
+
+# Further Questions
+
+mongoose
+What `const User = / module.exports = / mongoose.model('', schema)` returns that we export and use like `new User()`

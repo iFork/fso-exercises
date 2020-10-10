@@ -48,3 +48,22 @@ PUT /api/blogs/5f7991fc65e9b79148876f18
     "id": "0000",
     "INVALKEY": "0000"
 }
+
+# users api
+
+GET /api/users
+
+POST /api/users
+{
+  "username": "root",
+  "password": "rootpass",
+  "name": "Root User"
+}
+
+POST /api/users
+{
+  "username": "roota",
+  "password": "rootapass",
+  "name": "Roota User"
+}
+
