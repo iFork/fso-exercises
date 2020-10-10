@@ -51,8 +51,25 @@ const getInvalidId = async () => {
   return blogId;
 };
 
+const initialUsers = [
+  {
+    username: 'root',
+    password: 'rootpass',
+    name: 'Root User',
+  },
+];
+
+const usersInDb = async () => {
+  const response = await api
+    .get('/api/users');
+  const users = response.body;
+  return users;
+};
+
 module.exports = {
   initialBlogs,
   blogsInDb,
   getInvalidId,
+  initialUsers,
+  usersInDb,
 };
