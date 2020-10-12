@@ -13,27 +13,16 @@ blogRouter.get('/', async (_request, response) => {
   response.json(blogs);
 });
 
-// get token from header
-const getTokenFrom = (request) => {
-  const authorizationHeader = request.get('Authorization');
-  if (!authorizationHeader
-    || !authorizationHeader.toLowerCase().startsWith('bearer ')) {
-    return null;
-  }
-  return authorizationHeader.substring(7);
-};
-
 blogRouter.post('/', async (request, response, _next) => {
   // NOTE: no need to add a catch block with call to next(err) since we are
   // using express-async-errors package
-  const token = getTokenFrom(request);
-  if (!token) {
+  if (!request.token) {
     return response.status(401).json({
       error: 'Token is invlid or missing',
     });
   }
   // TODO: convert to async w callback?
-  const decodedToken = jwt.verify(token, process.env.SECRET);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
   const { id, username } = decodedToken;
   if (!id || !username) {

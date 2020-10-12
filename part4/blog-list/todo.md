@@ -53,7 +53,7 @@ user schematype validation
 
 # 4.19
 
-blog router, in post route, 
++ blog router, in post route, 
   + verify authorization header, 
   + find user using decoded payload,
   + return error response if token is missing, or verification fails
@@ -61,11 +61,11 @@ blog router, in post route,
 
 # 4.20
 
-refactor token isolation / getter into a middleware
-  remove getTokenFrom helper form blog router
-  add middleware  `tokenExtractor`
-    set request.token field
-  hookup middleware and read `req.token`
++ refactor token isolation / getter into a middleware
+  + remove getTokenFrom helper form blog router
+  + add middleware  `tokenExtractor`
+    + set request.token field
+  + hookup middleware and read `req.token`
 
 # Further Questions
 

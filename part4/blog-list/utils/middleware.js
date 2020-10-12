@@ -31,6 +31,19 @@ const errorHandler = (err, _req, res, next) => {
   next(err);
 };
 
+// get token from header
+const tokenExtractor = (req, _res, next) => {
+  const authorizationHeader = req.get('Authorization');
+  if (!authorizationHeader
+    || !authorizationHeader.toLowerCase().startsWith('bearer ')) {
+    req.token = null;
+  } else {
+    req.token = authorizationHeader.substring(7); // drop 'Bearer '
+  }
+  next();
+};
+
 module.exports = {
   errorHandler,
+  tokenExtractor,
 };
