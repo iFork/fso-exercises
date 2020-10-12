@@ -1,4 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 const blogRouter = require('express').Router();
+const jwt = require('jsonwebtoken');
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
@@ -11,12 +13,38 @@ blogRouter.get('/', async (_request, response) => {
   response.json(blogs);
 });
 
+// get token from header
+const getTokenFrom = (request) => {
+  const authorizationHeader = request.get('Authorization');
+  if (!authorizationHeader
+    || !authorizationHeader.toLowerCase().startsWith('bearer ')) {
+    return null;
+  }
+  return authorizationHeader.substring(7);
+};
+
 blogRouter.post('/', async (request, response, _next) => {
   // NOTE: no need to add a catch block with call to next(err) since we are
   // using express-async-errors package
-  let blog = request.body;
-  const someUser = await User.findOne({});
-  // console.log('someUser', someUser);
+  const token = getTokenFrom(request);
+  if (!token) {
+    return response.status(401).json({
+      error: 'Token is invlid or missing',
+    });
+  }
+  // TODO: convert to async w callback?
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  const { id, username } = decodedToken;
+  if (!id || !username) {
+    return response.status(401).json({
+      error: 'Token verification failed',
+    });
+  }
+  const user = await User
+    .findById(id)
+    .orFail();
+
   // **NOTE**: mongoose seems to have no problem with **casting an
   // object/document to ObjectId**.
   // Also when a document is supplied to a field of type ObjectId, returned
@@ -25,17 +53,21 @@ blogRouter.post('/', async (request, response, _next) => {
   // user).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\/
   // blog = { ...blog, user: someUser };
-  blog = { ...blog, user: someUser._id };
-  console.log('blog', blog);
-  // NOTE: Non-matching fields get silently ignored by the mongoose doc c-tor.
-  const blogObj = new Blog(blog);
-  const saveResult = await blogObj.save();
+
+  const { body } = request;
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: user._id,
+  });
+  const saveResult = await blog.save();
   // update user, too
-  someUser.blogs = someUser.blogs.concat(saveResult._id);
-  await someUser.save();
+  user.blogs = user.blogs.concat(saveResult._id);
+  await user.save();
 
   await saveResult.populate('user', { username: 1, name: 1 }).execPopulate();
-  console.log('populated', saveResult.populated('user'));
   return response.status(201).json(saveResult);
 });
 

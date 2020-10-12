@@ -2,6 +2,10 @@ HOST: http://localhost:3003
 
 GET /api/blogs
 
+# post blog after authorization
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmODQyYzIzNWQ1MmQ3NDY2YWFlM2UxOSIsInVzZXJuYW1lIjoicm9vdCIsImlhdCI6MTYwMjUzMDkxM30.FdI1wJ76muxngyJiIgYgMbRBExN72bRE893VHzkXVIE
+
 POST /api/blogs
 {
   "title": "Rad blog",
@@ -40,7 +44,7 @@ PUT /api/blogs/5f7857157eb03871f8adf170
 }
 
 
-GEs /api/blogs
+GET /api/blogs
 
 PUT /api/blogs/5f7991fc65e9b79148876f18
 {
@@ -74,3 +78,5 @@ POST /api/login
   "username": "root",
   "password": "rootpass"
 }
+
+

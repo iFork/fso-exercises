@@ -54,10 +54,10 @@ user schematype validation
 # 4.19
 
 blog router, in post route, 
-  verify authorization header, 
-  find user using decoded payload,
-  return error response if token is missing, or verification fails
-  else, save blog with decoded user
+  + verify authorization header, 
+  + find user using decoded payload,
+  + return error response if token is missing, or verification fails
+  + else, save blog with decoded user
 
 # 4.20
 
