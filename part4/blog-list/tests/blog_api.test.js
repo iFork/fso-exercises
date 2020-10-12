@@ -7,7 +7,6 @@ const helper = require('./test_helper');
 
 const api = supertest(app);
 
-
 describe('blog api when there are some initial blogs', () => {
   beforeEach(async () => {
     // clean
@@ -35,6 +34,15 @@ describe('blog api when there are some initial blogs', () => {
     const blogs = await helper.blogsInDb();
     const blog = blogs[0];
     expect(blog.id).toBeDefined();
+  });
+  test('blog user prop is populated', async () => {
+    // FIXME: this fails due to db initialization specifies no user prop in blogs
+    const blogs = await helper.blogsInDb();
+    const blog = blogs[0];
+    expect(blog.user.id).toBeDefined();
+    expect(blog.user.username).toBeDefined();
+    expect(blog.user.name).toBeDefined();
+    expect(blog.user.blogs).not.toBeDefined();
   });
 
   describe('creating a new blog', () => {

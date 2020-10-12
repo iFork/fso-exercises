@@ -1,4 +1,5 @@
 TODO:
+
 # 4.15
 create new users
   + model
@@ -27,19 +28,42 @@ user schematype validation
 
 # 4.17
 
-blog model
-  user (author)
-blog post
-  arbitrary user (found first) is designated as author
-  populate user
-blog get /
-  populate user
-user model
-  blogs []
-user get /
-  populate blog
-  
++ blog model
+  + user (author)
++ blog post
+  + arbitrary user (found first) is designated as author
+  + populate user
++ blog get /
+  + populate user
++ user model
+  + blogs []
++ user get /
+  + populate blog
+[TODO: change db initialization to implement doc links and test ]
 
+# 4.18
+
+token-based authenticate
+  dependency: jsonwebtoken
+login router
+  check password, sign a payload and send if correct
+  otherwise return error response 
+
+# 4.19
+
+blog router, in post route, 
+  verify authorization header, 
+  find user using decoded payload,
+  return error response if token is missing, or verification fails
+  else, save blog with decoded user
+
+# 4.20
+
+refactor token isolation / getter into a middleware
+  remove getTokenFrom helper form blog router
+  add middleware  `tokenExtractor`
+    set request.token field
+  hookup middleware and read `req.token`
 
 # Further Questions
 

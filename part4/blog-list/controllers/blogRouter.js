@@ -1,18 +1,41 @@
 const blogRouter = require('express').Router();
 
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 blogRouter.get('/', async (_request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog
+    .find({})
+    .populate('user', { username: 1, name: 1 });
+    // .exec();
   response.json(blogs);
 });
 
 blogRouter.post('/', async (request, response, _next) => {
   // NOTE: no need to add a catch block with call to next(err) since we are
   // using express-async-errors package
-  const blog = request.body;
+  let blog = request.body;
+  const someUser = await User.findOne({});
+  // console.log('someUser', someUser);
+  // **NOTE**: mongoose seems to have no problem with **casting an
+  // object/document to ObjectId**.
+  // Also when a document is supplied to a field of type ObjectId, returned
+  // result (of save) seems to be **already populated** (without us calling
+  // .populate()), and `saveResult.populated()` returns truthy value (id of
+  // user).
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\/
+  // blog = { ...blog, user: someUser };
+  blog = { ...blog, user: someUser._id };
+  console.log('blog', blog);
+  // NOTE: Non-matching fields get silently ignored by the mongoose doc c-tor.
   const blogObj = new Blog(blog);
   const saveResult = await blogObj.save();
+  // update user, too
+  someUser.blogs = someUser.blogs.concat(saveResult._id);
+  await someUser.save();
+
+  await saveResult.populate('user', { username: 1, name: 1 }).execPopulate();
+  console.log('populated', saveResult.populated('user'));
   return response.status(201).json(saveResult);
 });
 

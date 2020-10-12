@@ -6,6 +6,11 @@ const blogSchema = mongoose.Schema({
   author: String,
   url: { type: String, required: [true, '{PATH} is required'] },
   likes: { type: Number, default: 0 },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    // string name to avoid requiring module and circualar dependency
+  },
 });
 
 blogSchema.set('toJSON', {
