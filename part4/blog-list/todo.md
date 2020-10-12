@@ -43,11 +43,13 @@ user schematype validation
 
 # 4.18
 
-token-based authenticate
-  dependency: jsonwebtoken
-login router
-  check password, sign a payload and send if correct
-  otherwise return error response 
++ token-based authenticate
+  + dependency: jsonwebtoken
++ login router
+  + check password, sign a payload and send if correct
+  + otherwise return error response 
++ .env: add secret
++ hook up in app
 
 # 4.19
 

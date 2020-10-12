@@ -67,3 +67,10 @@ POST /api/users
   "name": "Roota User"
 }
 
+# login api
+
+POST /api/login
+{
+  "username": "root",
+  "password": "rootpass"
+}
