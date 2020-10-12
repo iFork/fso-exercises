@@ -40,7 +40,7 @@ PUT /api/blogs/5f7857157eb03871f8adf170
 }
 
 
-GET /api/blogs
+GEs /api/blogs
 
 PUT /api/blogs/5f7991fc65e9b79148876f18
 {

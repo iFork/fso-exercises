@@ -5,7 +5,7 @@ require('express-async-errors'); // to avoid calling next(err) in catch blocks
 const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./utils/config');
-const blogRouter = require('./controllers/blogRouter');
+const blogRouter = require('./controllers/blogs');
 const usersRouter = require('./controllers/users');
 const middleware = require('./utils/middleware');
 
