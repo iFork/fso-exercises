@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
+// NOTE: no need to add a catch block with call to next(err) since we are
+// using express-async-errors package
+
 blogRouter.get('/', async (_request, response) => {
   const blogs = await Blog
     .find({})
@@ -14,8 +17,6 @@ blogRouter.get('/', async (_request, response) => {
 });
 
 blogRouter.post('/', async (request, response, _next) => {
-  // NOTE: no need to add a catch block with call to next(err) since we are
-  // using express-async-errors package
   if (!request.token) {
     return response.status(401).json({
       error: 'Token is invlid or missing',
@@ -61,10 +62,24 @@ blogRouter.post('/', async (request, response, _next) => {
 });
 
 blogRouter.delete('/:id', async (request, response, _next) => {
+  // if token is null JWT error has message 'jwt required'
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  const requesterId = decodedToken.id;
+  // console.log('requesterId', requesterId);
+
   const blogId = request.params.id;
-  // or not use 404 code (per errorHandler middleware when findAndDelete()
-  // fails (.orFail()), maybe 204 code is sufficient ?
-  await Blog.findByIdAndDelete(blogId).orFail(); // no need to .exec() w await too
+  const blog = await Blog.findById(blogId).orFail();
+  // TODO: check that blog has user path (safeguard agianst outdated schemas) ?
+  // NOTE: field of type `ObjectId` is returned as such from db.
+  // Use its `.toString()` methiod for string comparison.
+  const blogCreatorId = blog.user.toString();
+  if (requesterId !== blogCreatorId) {
+    return response.status(401).json({
+      error: 'You are not the creator of the blog',
+    });
+  }
+  await blog.deleteOne();
+  // console.log('deleted blog', blog);
   response.status(204).send();
 });
 

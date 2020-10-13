@@ -1,10 +1,16 @@
 HOST: http://localhost:3003
 
+# token of 'root' user
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmODQyYzIzNWQ1MmQ3NDY2YWFlM2UxOSIsInVzZXJuYW1lIjoicm9vdCIsImlhdCI6MTYwMjUzMDkxM30.FdI1wJ76muxngyJiIgYgMbRBExN72bRE893VHzkXVIE
+
+# token of 'roota' user
+
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmODU3OWI1YjJlMzRiNjRiZWE5YjA3ZiIsInVzZXJuYW1lIjoicm9vdGEiLCJpYXQiOjE2MDI1ODMxMTl9.KBf0S6-5-GG7cQGqmi2pbWo2O6E_PmaCTtDcSFk2pEQ
+
 GET /api/blogs
 
 # post blog after authorization
-
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmODQyYzIzNWQ1MmQ3NDY2YWFlM2UxOSIsInVzZXJuYW1lIjoicm9vdCIsImlhdCI6MTYwMjUzMDkxM30.FdI1wJ76muxngyJiIgYgMbRBExN72bRE893VHzkXVIE
 
 POST /api/blogs
 {
@@ -30,7 +36,15 @@ POST /api/blogs
   "author": "Jonathan",
 }
 
-DELETE /api/blogs/5f778fd50314aa0c44fca91c
+GET /api/blogs/
+
+DELETE /api/blogs/5f84b845f60bad30a30caf1a
+
+# following lacks 'user' field in blog
+DELETE /api/blogs/5f842c3955383446aee6bd5d
+
+# 'root' trying to delete blog of 'roota'
+DELETE /api/blogs/5f857c22b2e34b64bea9b080
 
 GET /api/blogs
 
@@ -79,4 +93,9 @@ POST /api/login
   "password": "rootpass"
 }
 
+POST /api/login
+{
+  "username": "roota",
+  "password": "rootapass"
+}
 

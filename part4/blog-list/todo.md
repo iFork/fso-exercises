@@ -67,6 +67,24 @@ user schematype validation
     + set request.token field
   + hookup middleware and read `req.token`
 
+# 4.21
+
++ blog delete route
+  + authorize only creator of the blog for deletion
+    + alternatives
+      sign payload of blog/:id and compare tokens
+      + Or decode token and compare decoded user ids
+  Note: in bd ObjectId stored is an object, not string. First parse toString() to compare with a string id.
+  + 401 otherwise
+
+# 4.22
+
+Tests
+  add new blogs w token authorization (fix old tests)
+  new test - cannot create blog if authorization is missing (error 401)
+
+
+
 # Further Questions
 
 mongoose
