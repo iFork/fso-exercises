@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
@@ -10,21 +10,7 @@ const api = supertest(app);
 describe('user api with some initial users in db', () => {
   beforeEach(async () => {
     await User.deleteMany({});
-    const saltRounds = 10;
-    const usersPromises = helper.initialUsers.map(async (u) => {
-      const passwordHash = await bcrypt.hash(u.password, saltRounds);
-      return {
-        username: u.username,
-        name: u.name,
-        passwordHash,
-      };
-    });
-    const users = await Promise.all(usersPromises);
-    const savedUsersPromises = users.map(async (u) => {
-      const userObj = new User(u);
-      return userObj.save();
-    });
-    await Promise.all(savedUsersPromises);
+    await helper.initUsersDb();
   });
   test('initial db state', async () => {
     const users = await helper.usersInDb();

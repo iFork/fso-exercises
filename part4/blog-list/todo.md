@@ -80,8 +80,18 @@ user schematype validation
 # 4.22
 
 Tests
-  add new blogs w token authorization (fix old tests)
-  new test - cannot create blog if authorization is missing (error 401)
+  
++ helper
+  + blogs w user ids
+  + users w blog ids
++ add new blogs w token authorization (fix old tests)
+  + get token for a user (via login)
+  + set authorization header to a token
+  + post
++ new test - cannot create blog if authorization is missing (error 401)
++ modify delete test accounting for authorization
++ add new test - cannot delete other's blog
+
 
 
 

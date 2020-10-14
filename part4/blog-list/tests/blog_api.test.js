@@ -9,13 +9,10 @@ const api = supertest(app);
 
 describe('blog api when there are some initial blogs', () => {
   beforeEach(async () => {
-    // clean
-    await Blog.deleteMany({});
-
-    // initialize db w initial blogs
-    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-    const promiseArray = blogObjects.map((blogObj) => blogObj.save());
-    await Promise.all(promiseArray);
+    // NOTE: Remember to clean ALL collections affected by inintDB to avoid
+    // duplicate entries
+    await helper.cleanDb();
+    await helper.initDb();
   });
   test('response is json', async () => {
     // NOTE: Remember to await, otherwise you get
@@ -36,7 +33,6 @@ describe('blog api when there are some initial blogs', () => {
     expect(blog.id).toBeDefined();
   });
   test('blog user prop is populated', async () => {
-    // FIXME: this fails due to db initialization specifies no user prop in blogs
     const blogs = await helper.blogsInDb();
     const blog = blogs[0];
     expect(blog.user.id).toBeDefined();
@@ -48,7 +44,13 @@ describe('blog api when there are some initial blogs', () => {
   describe('creating a new blog', () => {
     test('a new blog can be added', async () => {
       const blogsAtStart = await helper.blogsInDb();
-      // create a new blog obj, post
+      const { username, password } = helper.initialUsers[0];
+      // NOTE: ATTENTION: When you forget **await** async func calls, Jest even
+      // FAILS to print CONSOLE.LOG()s and complains like you are trying to do
+      // something `after the Jest environment has been torn down`
+      const authHeaderValue = await helper
+        .getAuthorizationHeaderValueFor(username, password);
+
       const blog = {
         title: 'First blog ti',
         author: 'Bob Blogger',
@@ -57,18 +59,39 @@ describe('blog api when there are some initial blogs', () => {
       };
       const response = await api
         .post('/api/blogs')
+        // NOTE: REMEMBER to include authorization type before token
+        .set('Authorization', authHeaderValue)
         .send(blog)
         .type('json')
         .expect(201);
-      // verify response matches what has been posted
       expect(response.body).toMatchObject(blog);
-      // verify count increase, inclusion in db after post
       const blogsAtEnd = await helper.blogsInDb();
       expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1);
       expect(blogsAtEnd).toContainEqual(response.body);
     });
+    test('a new blog can not be added w/o authorization', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+
+      const blog = {
+        title: 'First blog ti',
+        author: 'Bob Blogger',
+        url: 'https://bobo',
+        likes: 3,
+      };
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', 'wrong authorization')
+        .send(blog)
+        .type('json')
+        .expect(401);
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+    });
 
     test('default likes to 0 if prop is missing', async () => {
+      const { username, password } = helper.initialUsers[0];
+      const authHeaderValue = await helper
+        .getAuthorizationHeaderValueFor(username, password);
       // post blog with missing likes prop
       const blog = {
         title: 'Blog misses likes',
@@ -77,63 +100,119 @@ describe('blog api when there are some initial blogs', () => {
       };
       const response = await api
         .post('/api/blogs')
+        .set('Authorization', authHeaderValue)
         .send(blog)
         .type('json')
         .expect(201);
       const blogReturned = response.body;
       const blogId = blogReturned.id;
       const blogsAtEnd = await helper.blogsInDb();
-      // verify response
       expect(blogReturned.likes).toBe(0);
-      // verify db
-      expect(blogsAtEnd).toContainEqual({ ...blog, id: blogId, likes: 0 });
+      // NOTE: can use `expect.arrayContaining(array)`,
+      // `expect.objectContaining(object)` (can nest similar matchers) in place
+      // of literal expectations inside `toEqual()`.
+      const expected = [{
+        ...blog,
+        id: blogId,
+        likes: 0,
+        user: expect.anything(),
+      }];
+      expect(blogsAtEnd).toEqual(expect.arrayContaining(expected));
     });
-
     test('cannot create blogs missing title prop', async () => {
-      // create, post invalid note
+      const { username, password } = helper.initialUsers[0];
+      const authHeaderValue = await helper
+        .getAuthorizationHeaderValueFor(username, password);
+      // post invalid note
       const blog = {
         author: 'Bob Blogger',
         url: 'https://bobo',
       };
-      // verify response status is 400
       await api
         .post('/api/blogs')
+        .set('Authorization', authHeaderValue)
         .send(blog)
         .type('json')
         .expect(400);
     });
     test('cannot create blogs missing url prop', async () => {
-      // create, post invalid note
+      const { username, password } = helper.initialUsers[0];
+      const authHeaderValue = await helper
+        .getAuthorizationHeaderValueFor(username, password);
+      // post invalid note
       const blog = {
         title: 'Blog misses likes',
         author: 'Bob Blogger',
       };
-      // verify response status is 400
       await api
         .post('/api/blogs')
+        .set('Authorization', authHeaderValue)
         .send(blog)
         .type('json')
         .expect(400);
     });
   });
   describe('delete a blog', () => {
-    test('delete a blog', async () => {
+    test('creator can delete his/her blog ', async () => {
       // get a valid id to delete
       const blogsAtStart = await helper.blogsInDb();
       const blog = blogsAtStart[0];
-      const blogId = blog.id;
-      // delete
+      const { id: blogId, user: { username } } = blog;
+      // console.log({ blogId, user: { username } });
+      // find user by username in initialUsers to get password
+      const { password } = helper.initialUsers.find(
+        (user) => user.username === username,
+      );
+      // console.log({ password });
+      const authHeaderValue = await helper.getAuthorizationHeaderValueFor(
+        username,
+        password,
+      );
       await api
         .delete(`/api/blogs/${blogId}`)
+        .set('Authorization', authHeaderValue)
         .expect(204);
-      // verify response status, db content
       const blogsAtEnd = await helper.blogsInDb();
       expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
       expect(blogsAtEnd).not.toContainEqual(blog);
     });
+    test('can not delete blog w/o author', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const { id: blogId } = blogsAtStart[0];
+      await api
+        .delete(`/api/blogs/${blogId}`)
+        .set('Authorization', 'wrong header')
+        .expect(401);
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+    });
+    test('one can not delete other\'s blog ', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blog = blogsAtStart[0];
+      const { id: blogId, user: { username } } = blog;
+      // console.log({ blogId, user: { username } });
+      // find another user
+      const {
+        username: otherUsername,
+        password: otherPassword,
+      } = helper.initialUsers.find((user) => user.username !== username);
+      // console.log({ otherUsername, otherPassword });
+      const otherAuthHeaderValue = await helper.getAuthorizationHeaderValueFor(
+        otherUsername,
+        otherPassword,
+      );
+      await api
+        .delete(`/api/blogs/${blogId}`)
+        .set('Authorization', otherAuthHeaderValue)
+        .expect(401);
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+      expect(blogsAtEnd).toContainEqual(blog);
+    });
   });
 
   describe('update a blog', () => {
+    // TODO: FIXME: broken sometime around authorization introduction
     test('update a blog w valid id', async () => {
       // get a valid id
       const blogsAtStart = await helper.blogsInDb();
