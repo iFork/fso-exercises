@@ -79,16 +79,19 @@ blogRouter.delete('/:id', async (request, response, _next) => {
     });
   }
   await blog.deleteOne();
-  // console.log('deleted blog', blog);
-  response.status(204).send();
+  // TODO: Update also user obj, filtering out this blog id from its 'blogs'
+  // field console.log('deleted blog', blog);
+  response.status(204).send(); // or .end()
 });
 
 blogRouter.put('/:id', async (request, response, _next) => {
   const blogId = request.params.id;
   const { body } = request;
   // NOTE: if using following - remember to check for
-  // undefined/missing fields in request (e.g. newVal || oldVal)
-  // BUT putting body directly in findByIdAndUpdate() is simpler.
+  // undefined/missing fields in request (e.g. newVal || oldVal) to not
+  // override existing values with nulls if field is not sent in a request.
+  // BUT putting body directly in findByIdAndUpdate() is a simpler way to
+  // achive the same effect.
   //
   // const updatedBlog = {
   //   title: body.title,
