@@ -2,13 +2,18 @@ import React, { useState, useEffect} from 'react';
 import Note from "./components/Note";
 import Notification from "./components/Notification";
 import Footer from "./components/Footer";
+import LoginForm from "./components/LoginForm";
 import noteService from "./services/notes";
+import loginService from "./services/login";
 
 const App = () => {
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("a new note...");
     const [showAll, setShowAll] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [user, setUser] = useState(null);
 
     const hook = () => {
         console.log("Effect");
@@ -21,8 +26,31 @@ const App = () => {
     }
 
     // hook();
-    useEffect(hook, [])
+    useEffect(hook, []);
     console.log("render", notes.length, "notes");
+
+    const handleLogin = async (event) => {
+        // prevent default submit ('get' request and reload)
+        event.preventDefault();
+        // Q: Can values in DOM be stale compared to values in state?
+        // A: No, since we get dom value on change and pass it to setState.
+        const {
+            username: { value: username },
+            password: { value: password },
+        } = event.target;
+        // console.log('Logging in', username, password);
+        try {
+            const user = await loginService.login({ username, password });
+            console.log('logged', { user });
+            setUser(user);
+            setUsername("");
+            setPassword("");
+        } catch (err) {
+            const errorMsg = err.response.data.error || err.response.statusText;
+            setErrorMessage(errorMsg);
+            setTimeout(() => setErrorMessage(null), 5000 );
+        }
+    };
 
     const notesToShow = showAll 
         ? notes 
@@ -56,6 +84,22 @@ const App = () => {
         console.log("handleChange called w/ event:", event.target); 
         setNewNote(event.target.value);
     }
+
+    const addNoteForm = () => (         
+        <form onSubmit={addNote}>
+            <label for="note_title">Note:</label>
+            <input 
+                type="text" 
+                id="note_title" 
+                name="note_title" 
+                value={newNote}
+                // defaultValue={newNote} // NOTE: field is editable, but
+                // edits do not pass to e.target.value
+                onChange={handleNoteChange}/>
+            <button type="submit">Add Note</button>
+        </form>
+    );
+
     const toggleImportance = (id) => {
         console.log(`toggle importance of ${id}'th note`);
         const note = notes.find(n => n.id === id);
@@ -77,6 +121,23 @@ const App = () => {
         <div>
             <h1>Notes</h1>
             <Notification message={errorMessage} />
+
+            {/* below both a functional component 'style' and a helper function
+            'style' are used, just for display of diversity */}
+            {/* { user && addNoteForm() } */}
+            { user === null 
+                ? <LoginForm
+                    loginHandler={handleLogin}
+                    username={username}
+                    setUsername={setUsername}
+                    password={password}
+                    setPassword={setPassword}
+                />
+                : <div>
+                    <p> Logged in as {user.username}</p>
+                    { addNoteForm() }
+                </div>
+            }
             <button type="button" onClick={() => setShowAll(!showAll)}>
                 Show {showAll ? "Important" : "All"}
             </button>
@@ -88,17 +149,6 @@ const App = () => {
                         toggleImportance={() => toggleImportance(note.id)} />
                 )}
             </ul>
-            <form onSubmit={addNote}>
-                <label>Note:</label>
-                {/* <label for="note_title">Note:</label> */}
-                {/* FIXME: Warning: Invalid DOM property `for`. */}
-                <input type="text" id="note_title" name="note_title" 
-                    value={newNote}
-                    // defaultValue={newNote} // NOTE: field is editable, but
-                                            // edits do not pass to e.target.value
-                    onChange={handleNoteChange}/>
-                <button type="submit">Add Note</button>
-            </form>
             <Footer />
         </div>
     );
