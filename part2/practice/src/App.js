@@ -41,12 +41,15 @@ const App = () => {
         // console.log('Logging in', username, password);
         try {
             const user = await loginService.login({ username, password });
-            console.log('logged', { user });
             setUser(user);
+            noteService.setToken(user.token);
             setUsername("");
             setPassword("");
         } catch (err) {
-            const errorMsg = err.response.data.error || err.response.statusText;
+            const errorMsg = err.response && err.response.data
+                ? err.response.data.error || err.response.statusText
+                : `Internal Error`
+            // const errorMsg = err.response.statusText;
             setErrorMessage(errorMsg);
             setTimeout(() => setErrorMessage(null), 5000 );
         }
@@ -87,7 +90,7 @@ const App = () => {
 
     const addNoteForm = () => (         
         <form onSubmit={addNote}>
-            <label for="note_title">Note:</label>
+            <label htmlFor="note_title">Note:</label>
             <input 
                 type="text" 
                 id="note_title" 

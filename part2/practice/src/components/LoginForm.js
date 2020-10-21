@@ -13,7 +13,7 @@ export const LoginForm = ({
             onSubmit={loginHandler}
         >
             <div>
-                <label for='id_username'>Username</label>
+                <label htmlFor='id_username'>Username</label>
                 <input
                     id='id_username'
                     type='text'
@@ -22,7 +22,7 @@ export const LoginForm = ({
                     onChange={({target}) => setUsername(target.value)} />
             </div>
             <div>
-                <label for='id_password'>Password </label>
+                <label htmlFor='id_password'>Password </label>
                 <input
                     id='id_password'
                     type='password'
