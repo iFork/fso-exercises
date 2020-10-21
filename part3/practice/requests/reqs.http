@@ -36,7 +36,7 @@ POST /api/unknownx
 
 POST /api/users
 {
-    "username": "roota2",
+    "username": "root",
     "password": "pass",
     "name": "Bob"
 }
@@ -54,6 +54,12 @@ POST /api/notes
 }
 
 # login
+
+POST /api/login
+{
+    "username": "root",
+    "password": "pass"
+}
 
 POST /api/login
 {

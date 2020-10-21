@@ -27,6 +27,16 @@ const App = () => {
 
     // hook();
     useEffect(hook, []);
+    // use user from localStorage if exists
+    useEffect(() => {
+        const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
+        if (loggedUserJSON) {
+            console.log('Effect: read user data from localStorage');
+            const user = JSON.parse(loggedUserJSON);
+            setUser(user);
+            noteService.setToken(user.token)
+        }
+    }, [])
     console.log("render", notes.length, "notes");
 
     const handleLogin = async (event) => {
@@ -43,12 +53,15 @@ const App = () => {
             const user = await loginService.login({ username, password });
             setUser(user);
             noteService.setToken(user.token);
+            const loggedUserJSON = JSON.stringify(user);
+            window.localStorage.setItem("loggedNoteappUser", loggedUserJSON);
             setUsername("");
             setPassword("");
         } catch (err) {
             const errorMsg = err.response && err.response.data
                 ? err.response.data.error || err.response.statusText
-                : `Internal Error`
+                : `Internal Error: ${err.message}`
+                // : `Internal Error: ${err.message}`
             // const errorMsg = err.response.statusText;
             setErrorMessage(errorMsg);
             setTimeout(() => setErrorMessage(null), 5000 );
