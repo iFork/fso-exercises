@@ -1,0 +1,46 @@
+[
+  {
+    "id": "5f7cc6d904509cdfabd6952f",
+    "name": "Superuser",
+    "notes": [
+      {
+        "content": "Note of a user",
+        "id": "5f7cd0dcb347aca793bb73a7",
+        "important": false
+      },
+      {
+        "content": "Note of a user updated",
+        "id": "5f7cd0f6b347aca793bb73a8",
+        "important": null
+      },
+      {
+        "content": "Note of a user",
+        "id": "5f7dba953c5de6e094496566",
+        "important": false
+      },
+      {
+        "content": "Note of a user",
+        "id": "5f7dcdb37ebca86516939369",
+        "important": false
+      },
+      {
+        "content": "Note of a user",
+        "id": "5f7dce461703c96cde0e958d",
+        "important": false
+      }
+    ],
+    "username": "root"
+  },
+  {
+    "id": "5f7cc7bde2b400e3645451b0",
+    "name": "Bob",
+    "notes": [],
+    "username": "roota"
+  },
+  {
+    "id": "5f7cc7fee2b400e3645451b2",
+    "name": "Bob",
+    "notes": [],
+    "username": "roota2"
+  }
+]
