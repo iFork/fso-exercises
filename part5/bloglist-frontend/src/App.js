@@ -16,6 +16,15 @@ const App = () => {
     )  
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser")
+    if (loggedUserJSON) {
+      const loggedUser = JSON.parse(loggedUserJSON)
+      // console.log('useEffect: there is a saved user', { loggedUser });
+      setUser(loggedUser)
+    }
+  }, [])
+
   // Q: why we nest handleLogin() func inside App component?
   // A: It is simpler since it depends on app state. 
   // Also a new func will be 'instantiated' on every render but 
@@ -30,11 +39,20 @@ const App = () => {
         password: event.target.password.value,
       }) // axios parses json in response.data to an object
       // console.log({ loggedUser })
+      setUsername("")
+      setPassword("")
       setUser(loggedUser)
+      const loggedUserJSON = JSON.stringify(loggedUser);
+      window.localStorage.setItem("loggedBlogappUser", loggedUserJSON);
     } catch (err) {
       console.log(err.response.data.error);
       // TODO: set error message
     }
+  }
+
+  const handleLogout = () => {
+    setUser(null);
+    window.localStorage.clear();
   }
 
   if (!user) {
@@ -53,7 +71,10 @@ const App = () => {
   }
   return (
     <div>
-      <p>{user.username} logged in</p>
+      <div>
+        <p>{user.username} logged in</p>
+        <button type="button" onClick={handleLogout}>Logout</button>
+      </div>
       <h2>Blogs</h2>
       { blogs.map(blog =>
       <Blog key={blog.id} blog={blog} />
