@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import Notifications from './components/Notifications'
 import AddBlogForm from './components/AddBlogForm'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -13,6 +14,27 @@ const App = () => {
   const [newBlogTitle, setNewBlogTitle] = useState("")
   const [newBlogAuthor, setNewBlogAuthor] = useState("")
   const [newBlogUrl, setNewBlogUrl] = useState("")
+  const [notifications, setNotifications] = useState([])
+
+  const notificationId = useRef(0)
+  const popNotification = (notification) => {
+    const id = ++notificationId.current
+    setNotifications(notifications.concat({
+      ...notification,
+      id,
+    }))
+    // NOTE: when func is passed to setTimeout(), it captures vars
+    // referenced in it (e.g. `notifications`), which may become *stale* before
+    // setTimeout executes callback. 
+    // Therefore here we use 'functional' state updater, passing a callback with
+    // previous state as an argument.
+    // NOTE: Chrome make me think that setTimeout does not work since changing
+    // time length had no effect. At the end I just *refreshed the Chrome page*
+    // and it started to work.
+    setTimeout(() => setNotifications((previousNotifications) => 
+        previousNotifications.filter((ntf) => ntf.id !== id)),
+      6_000)
+  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -50,15 +72,26 @@ const App = () => {
       blogService.setToken(loggedUser.token)
       const loggedUserJSON = JSON.stringify(loggedUser);
       window.localStorage.setItem("loggedBlogappUser", loggedUserJSON);
+      popNotification({
+        type: "success",
+        content: `Logged in as ${loggedUser.username}`
+      })
     } catch (err) {
       console.log(err.response.data.error);
-      // TODO: set error message
+      popNotification({
+        type: "error",
+        content: err.response.data.error
+      })
     }
   }
 
   const handleLogout = () => {
     setUser(null);
     window.localStorage.clear();
+    popNotification({
+      type: "success",
+      content: 'Logged out'
+    })
   }
 
   const handleBlogCreation = async (event) => {
@@ -76,20 +109,27 @@ const App = () => {
     };
     try {
       const blogReturned = await blogService.create(blog);
-      // console.log({ blogReturned });
       setBlogs(blogs.concat(blogReturned));
       setNewBlogTitle("");
       setNewBlogAuthor("");
       setNewBlogUrl("");
+      popNotification({
+        type: "success",
+        content: `Blog '${blogReturned.title}' was added`
+      })
     } catch (err) {
-      // TODO: (in error notification feature) set error message state
       console.log('error is:', err.response.data.error);
+      popNotification({
+        type: "error",
+        content: err.response.data.error
+      })
     }
   }
 
   if (!user) {
     return (
       <div>
+        <Notifications notifications={notifications} />
         <h2>Log in to application</h2>
         <LoginForm
           loginHandler={handleLogin}
@@ -103,6 +143,7 @@ const App = () => {
   }
   return (
     <div>
+      <Notifications notifications={notifications} />
       <div>
         <p>{user.username} logged in</p>
         <button type="button" onClick={handleLogout}>Logout</button>

@@ -1,0 +1,26 @@
+
+.notification {
+  color: gray;
+  border: 3px solid #999;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: lightgray;
+}
+
+/* When multiple declarations have equal specificity, the last
+ * declaration found in the CSS is applied to the element.
+ * See Specificity. */
+
+.errorNotification {
+  color: red;
+  border-color: red;
+  background-color: lightpink;
+}
+
+.successNotification {
+  color: green;
+  border: 3px solid #999;
+  border-color: green;
+  background-color: lightgreen;
+}
+
