@@ -14,6 +14,7 @@ const App = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
+    const [loginVisible, setLoginVisible] = useState(false)
 
     const hook = () => {
         console.log("Effect");
@@ -68,6 +69,43 @@ const App = () => {
         }
     };
 
+    const loginForm = () => {
+        const showWhenLoginFormIsVisible = { 
+            display: loginVisible ? "" : "none"
+        }
+        const hideWhenLoginFormIsVisible = { 
+            display: loginVisible ? "none" : ""
+        }
+
+        return (
+            <div>
+                <div style={showWhenLoginFormIsVisible}>
+                    <LoginForm 
+                        loginHandler={handleLogin}
+                        username={username}
+                        setUsername={setUsername}
+                        password={password}
+                        setPassword={setPassword}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setLoginVisible(false)}
+                    >
+                        Cnacel
+                    </button>
+                </div>
+                <div style={hideWhenLoginFormIsVisible}>
+                    <button
+                        type="button"
+                        onClick={() => setLoginVisible(true)}
+                    >
+                        Login
+                    </button>
+                </div>
+            </div>
+        )
+        
+    }
     const notesToShow = showAll 
         ? notes 
         : notes.filter(note => note.important);
@@ -138,17 +176,9 @@ const App = () => {
             <h1>Notes</h1>
             <Notification message={errorMessage} />
 
-            {/* below both a functional component 'style' and a helper function
-            'style' are used, just for display of diversity */}
             {/* { user && addNoteForm() } */}
             { user === null 
-                ? <LoginForm
-                    loginHandler={handleLogin}
-                    username={username}
-                    setUsername={setUsername}
-                    password={password}
-                    setPassword={setPassword}
-                />
+                ? loginForm()
                 : <div>
                     <p> Logged in as {user.username}</p>
                     { addNoteForm() }
