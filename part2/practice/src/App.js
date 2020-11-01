@@ -2,7 +2,9 @@ import React, { useState, useEffect} from 'react';
 import Note from "./components/Note";
 import Notification from "./components/Notification";
 import Footer from "./components/Footer";
+import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
+import NoteForm from "./components/NoteForm";
 import noteService from "./services/notes";
 import loginService from "./services/login";
 
@@ -69,43 +71,6 @@ const App = () => {
         }
     };
 
-    const loginForm = () => {
-        const showWhenLoginFormIsVisible = { 
-            display: loginVisible ? "" : "none"
-        }
-        const hideWhenLoginFormIsVisible = { 
-            display: loginVisible ? "none" : ""
-        }
-
-        return (
-            <div>
-                <div style={showWhenLoginFormIsVisible}>
-                    <LoginForm 
-                        loginHandler={handleLogin}
-                        username={username}
-                        setUsername={setUsername}
-                        password={password}
-                        setPassword={setPassword}
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setLoginVisible(false)}
-                    >
-                        Cnacel
-                    </button>
-                </div>
-                <div style={hideWhenLoginFormIsVisible}>
-                    <button
-                        type="button"
-                        onClick={() => setLoginVisible(true)}
-                    >
-                        Login
-                    </button>
-                </div>
-            </div>
-        )
-        
-    }
     const notesToShow = showAll 
         ? notes 
         : notes.filter(note => note.important);
@@ -139,21 +104,6 @@ const App = () => {
         setNewNote(event.target.value);
     }
 
-    const addNoteForm = () => (         
-        <form onSubmit={addNote}>
-            <label htmlFor="note_title">Note:</label>
-            <input 
-                type="text" 
-                id="note_title" 
-                name="note_title" 
-                value={newNote}
-                // defaultValue={newNote} // NOTE: field is editable, but
-                // edits do not pass to e.target.value
-                onChange={handleNoteChange}/>
-            <button type="submit">Add Note</button>
-        </form>
-    );
-
     const toggleImportance = (id) => {
         console.log(`toggle importance of ${id}'th note`);
         const note = notes.find(n => n.id === id);
@@ -178,10 +128,24 @@ const App = () => {
 
             {/* { user && addNoteForm() } */}
             { user === null 
-                ? loginForm()
+                ? <Togglable buttonLabel="Login">
+                    <LoginForm 
+                        loginHandler={handleLogin}
+                        username={username}
+                        setUsername={setUsername}
+                        password={password}
+                        setPassword={setPassword}
+                    />
+                </Togglable>
                 : <div>
                     <p> Logged in as {user.username}</p>
-                    { addNoteForm() }
+                    <Togglable buttonLabel="Add Note">
+                        <NoteForm
+                            newNote={newNote}
+                            handleNoteChange={handleNoteChange}
+                            handleSubmit={addNote}
+                        />
+                    </Togglable>
                 </div>
             }
             <button type="button" onClick={() => setShowAll(!showAll)}>
