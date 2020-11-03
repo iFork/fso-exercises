@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Notifications from './components/Notifications'
+import Togglable from './components/Togglable';
 import AddBlogForm from './components/AddBlogForm'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -94,6 +95,8 @@ const App = () => {
     })
   }
 
+  const addBlogFormToggleRef = useRef()
+
   const handleBlogCreation = async (event) => {
     event.preventDefault();
     // console.log('creating new blog', { target: event.target });
@@ -117,6 +120,7 @@ const App = () => {
         type: "success",
         content: `Blog '${blogReturned.title}' was added`
       })
+      addBlogFormToggleRef.current.toggleVisibility()
     } catch (err) {
       console.log('error is:', err.response.data.error);
       popNotification({
@@ -148,15 +152,17 @@ const App = () => {
         <p>{user.username} logged in</p>
         <button type="button" onClick={handleLogout}>Logout</button>
       </div>
-      <AddBlogForm
-        handleBlogCreation={handleBlogCreation}
-        newBlogTitle={newBlogTitle}
-        setNewBlogTitle={setNewBlogTitle}
-        newBlogAuthor={newBlogAuthor}
-        setNewBlogAuthor={setNewBlogAuthor}
-        newBlogUrl={newBlogUrl}
-        setNewBlogUrl={setNewBlogUrl}
-      />
+      <Togglable ref={addBlogFormToggleRef} buttonLabel="Add Blog">
+        <AddBlogForm
+          handleBlogCreation={handleBlogCreation}
+          newBlogTitle={newBlogTitle}
+          setNewBlogTitle={setNewBlogTitle}
+          newBlogAuthor={newBlogAuthor}
+          setNewBlogAuthor={setNewBlogAuthor}
+          newBlogUrl={newBlogUrl}
+          setNewBlogUrl={setNewBlogUrl}
+        />
+      </Togglable>
       <h2>Blogs</h2>
       { blogs.map(blog =>
       <Blog key={blog.id} blog={blog} />
