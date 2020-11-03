@@ -12,9 +12,6 @@ const App = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
-  const [newBlogTitle, setNewBlogTitle] = useState("")
-  const [newBlogAuthor, setNewBlogAuthor] = useState("")
-  const [newBlogUrl, setNewBlogUrl] = useState("")
   const [notifications, setNotifications] = useState([])
 
   const notificationId = useRef(0)
@@ -97,36 +94,21 @@ const App = () => {
 
   const addBlogFormToggleRef = useRef()
 
-  const handleBlogCreation = async (event) => {
-    event.preventDefault();
-    // console.log('creating new blog', { target: event.target });
-    // const blog = {
-    //     title:  event.target.title.value,
-    //     author: event.target.author.value,
-    //     url:    event.target.url.value,
-    // };
-    const blog = {
-        title: newBlogTitle, 
-        author: newBlogAuthor,
-        url: newBlogUrl,
-    };
+  async function createBlog(blog) {
     try {
       const blogReturned = await blogService.create(blog);
       setBlogs(blogs.concat(blogReturned));
-      setNewBlogTitle("");
-      setNewBlogAuthor("");
-      setNewBlogUrl("");
       popNotification({
         type: "success",
         content: `Blog '${blogReturned.title}' was added`
-      })
-      addBlogFormToggleRef.current.toggleVisibility()
+      });
     } catch (err) {
       console.log('error is:', err.response.data.error);
       popNotification({
         type: "error",
         content: err.response.data.error
-      })
+      });
+      throw err;
     }
   }
 
@@ -154,13 +136,8 @@ const App = () => {
       </div>
       <Togglable ref={addBlogFormToggleRef} buttonLabel="Add Blog">
         <AddBlogForm
-          handleBlogCreation={handleBlogCreation}
-          newBlogTitle={newBlogTitle}
-          setNewBlogTitle={setNewBlogTitle}
-          newBlogAuthor={newBlogAuthor}
-          setNewBlogAuthor={setNewBlogAuthor}
-          newBlogUrl={newBlogUrl}
-          setNewBlogUrl={setNewBlogUrl}
+          createBlog={createBlog}
+          togglableRef={addBlogFormToggleRef}
         />
       </Togglable>
       <h2>Blogs</h2>
