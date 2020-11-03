@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const NoteForm = ({ createNote }) => {
+const NoteForm = ({ createNote, togglableRef }) => {
     const [newNote, setNewNote] = useState("a new note...");
 
     const handleNoteChange = (event) => {
@@ -19,6 +19,7 @@ const NoteForm = ({ createNote }) => {
             };
         createNote(newNoteObj);
         setNewNote('');
+        togglableRef.current.toggleVisibility();
     }
 
     return (

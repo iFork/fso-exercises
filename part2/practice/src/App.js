@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react';
+import { useRef } from 'react';
 import Note from "./components/Note";
 import Notification from "./components/Notification";
 import Footer from "./components/Footer";
@@ -38,7 +39,6 @@ const App = () => {
     }, [])
     console.log("render", notes.length, "notes");
 
-
     const login = async (userCredentials) => {
         try {
             const user = await loginService.login(userCredentials);
@@ -59,6 +59,7 @@ const App = () => {
         ? notes 
         : notes.filter(note => note.important);
 
+    const noteFormToggleRef = useRef() 
 
     const createNote = (newNoteObj) => {
         noteService
@@ -108,9 +109,10 @@ const App = () => {
                       }}>
                       Logout
                     </button>
-                    <Togglable buttonLabel="Add Note">
+                    <Togglable ref={noteFormToggleRef} buttonLabel="Add Note">
                         <NoteForm
                             createNote={createNote}
+                            togglableRef={noteFormToggleRef}
                         />
                     </Togglable>
                 </div>
