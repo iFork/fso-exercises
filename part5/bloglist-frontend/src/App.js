@@ -94,7 +94,7 @@ const App = () => {
 
   const addBlogFormToggleRef = useRef()
 
-  async function createBlog(blog) {
+  const createBlog = async (blog) => {
     try {
       const blogReturned = await blogService.create(blog);
       setBlogs(blogs.concat(blogReturned));
@@ -112,6 +112,27 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (blog) => {
+    try {
+      const blogReturned = await blogService.update(blog);
+      popNotification({
+        type: "success",
+        content: `You liked '${blogReturned.title}'`
+      });
+      // Apply change to blogs array
+      setBlogs((blogs) => blogs.map((b) => {
+        return b.id === blog.id ? blogReturned : b
+      }))
+    } catch (err) {
+      console.log('error is:', err.response.data.error);
+      popNotification({
+        type: "error",
+        content: err.response.data.error
+      });
+      throw err;
+    }
+  }
+  
   if (!user) {
     return (
       <div>
@@ -142,7 +163,7 @@ const App = () => {
       </Togglable>
       <h2>Blogs</h2>
       { blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
   ) 
