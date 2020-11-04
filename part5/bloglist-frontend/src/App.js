@@ -162,8 +162,17 @@ const App = () => {
         />
       </Togglable>
       <h2>Blogs</h2>
-      { blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+      {[ ...blogs ]
+        // NOTE: sort is in-place algoritm, if called on a state array, 
+        // it will mutate the state array which is a BAD thing.
+        // Here we deep copy, then sort.
+        // TODO: Q: Is there better alternative, maybe useReducer with init
+        // function to always put in state already sorted array? or useMemo?
+        // A bad alternative with noticable lag is calling setState inside
+        // useEffect.
+        .sort((a, b) => b.likes - a.likes) // ascending order
+        .map(blog =>
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
   ) 

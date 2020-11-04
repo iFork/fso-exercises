@@ -32,7 +32,7 @@ const update = async (blog) => {
       Authorization: token
     }
   }
-  console.log('putting', `${baseUrl}/${blog.id}`, { blog, config });
+  // console.log('putting', `${baseUrl}/${blog.id}`, { blog, config });
   const response = await axios.put(
      `${baseUrl}/${blog.id}`, blog, config
   )
