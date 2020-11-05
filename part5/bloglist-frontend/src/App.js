@@ -15,6 +15,13 @@ const App = () => {
   const [notifications, setNotifications] = useState([])
 
   const notificationId = useRef(0)
+  /**
+   * popNotification.
+   * Update notifications state of the App by adding and after some time
+   * removing a notification.
+   *
+   * @param {{ type: "error" | "success", content: string}} notification
+   */
   const popNotification = (notification) => {
     const id = ++notificationId.current
     setNotifications(notifications.concat({
@@ -94,6 +101,16 @@ const App = () => {
 
   const addBlogFormToggleRef = useRef()
 
+  /**
+   * @typedef Blog
+   * @type {object}
+   * @property {string} author
+   * @property {string} id   
+   * @property {number} likes 
+   * @property {string} title 
+   * @property {string} url
+   */
+
   const createBlog = async (blog) => {
     try {
       const blogReturned = await blogService.create(blog);
@@ -133,6 +150,36 @@ const App = () => {
     }
   }
   
+  /**
+   * @callback DeleteBlog
+   * @param {Blog} blog
+   */
+
+  /**
+   * @type {DeleteBlog} 
+   */
+  const deleteBlog = async (blog) => {
+    const isConfirmed = window.confirm(
+      `Do you want to delete blog ${blog.title} ${blog.author}?`
+    )
+    if (isConfirmed) {
+      try {
+        await blogService.deleteById(blog.id)
+        setBlogs((blogs) => blogs.filter((b) => b.id !== blog.id))
+        popNotification({
+          type: "success",
+          content: `Blog ${blog.title} ${blog.author} deleted` 
+        })
+      } catch (err) {
+        console.log('error is:', err.response.data.error);
+        popNotification({
+          type: "error",
+          content: err.response.data.error
+        })
+      }
+    }
+  }
+
   if (!user) {
     return (
       <div>
@@ -172,7 +219,13 @@ const App = () => {
         // useEffect.
         .sort((a, b) => b.likes - a.likes) // ascending order
         .map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+            currentUsername={user.username}
+          />
       )}
     </div>
   ) 

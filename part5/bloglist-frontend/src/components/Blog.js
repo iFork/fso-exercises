@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, currentUsername }) => {
   const [viewDetailed, setViewDetailed] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
@@ -17,23 +17,31 @@ const Blog = ({ blog, updateBlog }) => {
     const updatedLikes = likes + 1; 
     // NOTE: Remember to not do `state++`
     setLikes(updatedLikes)
-    const updatePayload = {
-      ...blog,
-      // override likes and user prop of blog
-      likes: updatedLikes, 
-      user: blog.user.id 
-      // NOTE: Remember to undo `populate` of mongoose and send just id not a
-      // populated user object
-    }
     try {
+      const updatePayload = {
+        ...blog,
+        // override likes and user prop of blog
+        likes: updatedLikes, 
+        user: blog.user.id 
+        // NOTE: Remember to undo `populate` of mongoose and send just id not a
+        // populated user object
+      }
       await updateBlog(updatePayload);
       // NOTE: response is applied to blogs array state of App inside
       // updateBlog() since `blogs` state is owned by App.
     } catch {
+      // catches also payload error due to missing user property
       // reset back in case of request fails
       setLikes(updatedLikes - 1)
     }
   }
+
+  const deleteHandler = async () => {
+    // console.log("deleting blog", blog.id);
+    await deleteBlog(blog)
+  }
+
+  const ownerIsCurrentUser = blog.user && blog.user.username === currentUsername 
 
   const blogStyle = {
     border: "solid",
@@ -56,6 +64,23 @@ const Blog = ({ blog, updateBlog }) => {
     </div>
     );
 
+  // NOTE: Better to factor out components into *functions* instead of assigning
+  // jsx expression to a *variable* since sooner or later we may want to add
+  // e.g. inline style to it or even separate it into its own component and
+  // make it stetefull
+  const deleteButton = () => { 
+    const  deleteButtonStyle = {
+      backgroundColor: "pink"
+    }
+    return (
+    <button style={deleteButtonStyle}
+      type="button"
+      onClick={deleteHandler}
+    >
+      Delete
+    </button>
+  ) }
+
   const detailedView = (
     <div>
       {blog.title} {blog.author}
@@ -74,8 +99,10 @@ const Blog = ({ blog, updateBlog }) => {
         </button>
       </div>
       <div>{blog.user ? blog.user.name : ""}</div>
+      { ownerIsCurrentUser && deleteButton() }
     </div>
   )
+
   return (
     <div style={blogStyle}>
       { viewDetailed || compactView }
