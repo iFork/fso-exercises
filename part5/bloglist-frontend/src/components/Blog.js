@@ -10,23 +10,23 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentUsername }) => {
 
   const likeHandler = async () => {
     // NOTE: Remember that setState is async operation and state is not updated
-    // right away. 
+    // right away.
     // NOTE: this cb is called on each click and on each click this component
     // rerenders (and setState resolves) so state cannot become stale between
     // clicks, as I understand. Right?
-    const updatedLikes = likes + 1; 
+    const updatedLikes = likes + 1
     // NOTE: Remember to not do `state++`
     setLikes(updatedLikes)
     try {
       const updatePayload = {
         ...blog,
         // override likes and user prop of blog
-        likes: updatedLikes, 
-        user: blog.user.id 
+        likes: updatedLikes,
+        user: blog.user.id
         // NOTE: Remember to undo `populate` of mongoose and send just id not a
         // populated user object
       }
-      await updateBlog(updatePayload);
+      await updateBlog(updatePayload)
       // NOTE: response is applied to blogs array state of App inside
       // updateBlog() since `blogs` state is owned by App.
     } catch {
@@ -41,10 +41,11 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentUsername }) => {
     await deleteBlog(blog)
   }
 
-  const ownerIsCurrentUser = blog.user && blog.user.username === currentUsername 
+  const ownerIsCurrentUser = blog.user && blog.user.username === currentUsername
+  console.log({ title: blog.title, ownerIsCurrentUser })
 
   const blogStyle = {
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     paddingTop: 10,
     paddingLeft: 2,
@@ -57,36 +58,36 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentUsername }) => {
       {blog.title} {blog.author}
       <button
         type="button"
-        onClick={()=> toggleViewDetailed()}
+        onClick={() => toggleViewDetailed()}
       >
         View
       </button>
     </div>
-    );
+  )
 
   // NOTE: Better to factor out components into *functions* instead of assigning
   // jsx expression to a *variable* since sooner or later we may want to add
   // e.g. inline style to it or even separate it into its own component and
   // make it stetefull
-  const deleteButton = () => { 
+  const deleteButton = () => {
     const  deleteButtonStyle = {
-      backgroundColor: "pink"
+      backgroundColor: 'pink'
     }
     return (
-    <button style={deleteButtonStyle}
-      type="button"
-      onClick={deleteHandler}
-    >
+      <button style={deleteButtonStyle}
+        type="button"
+        onClick={deleteHandler}
+      >
       Delete
-    </button>
-  ) }
+      </button>
+    ) }
 
   const detailedView = (
     <div>
       {blog.title} {blog.author}
       <button
         type="button"
-        onClick={()=> toggleViewDetailed()}
+        onClick={() => toggleViewDetailed()}
       >
         Hide
       </button>
@@ -98,7 +99,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentUsername }) => {
           Like
         </button>
       </div>
-      <div>{blog.user ? blog.user.name : ""}</div>
+      <div>{blog.user ? blog.user.name : ''}</div>
       { ownerIsCurrentUser && deleteButton() }
     </div>
   )

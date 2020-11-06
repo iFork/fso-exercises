@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useImperativeHandle, forwardRef } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
+import { useImperativeHandle, forwardRef } from 'react'
+import PropTypes from 'prop-types'
 
 const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
   const [visible, setVisible] = useState(false)
@@ -11,13 +11,13 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
 
   useImperativeHandle(ref, () => ({ toggleVisibility }))
   // inline css for jsx
-  const showWhenIsVisible = { display: visible ? "" : "none" }
-  const showWhenNotVisible = { display: visible ? "none" : "" }
+  const showWhenIsVisible = { display: visible ? '' : 'none' }
+  const showWhenNotVisible = { display: visible ? 'none' : '' }
   return (
     <div>
       <div style={showWhenIsVisible}>
         {children}
-        <button 
+        <button
           type="button"
           onClick={ () => toggleVisibility() }
         >
@@ -25,7 +25,7 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
         </button>
       </div>
       <div style={showWhenNotVisible}>
-        <button 
+        <button
           type="button"
           onClick={ () => toggleVisibility() }
         >
@@ -33,11 +33,13 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
         </button>
       </div>
     </div>
-  );
+  )
 })
 
+Togglable.displayName = 'Togglable'
+
 Togglable.propTypes = {
-    buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired
 }
 
 export default Togglable

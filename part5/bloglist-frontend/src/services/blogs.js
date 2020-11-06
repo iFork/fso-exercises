@@ -1,13 +1,13 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-let token = null;
+let token = null
 
 const setToken = (token_) => {
   // NOTE: Beware of local var names shadowing global/outer vars
   // Also, global var 'token' will be better named smth like 'authHeaderValue'
   token = `Bearer ${token_}`
-  console.log('set token to', token);
+  console.log('set token to', token)
 }
 
 const getAll = () => {
@@ -16,7 +16,7 @@ const getAll = () => {
 }
 
 const create = async (blog) => {
-  const config = { 
+  const config = {
     headers: {
       'Authorization': token,
     }
@@ -34,7 +34,7 @@ const update = async (blog) => {
   }
   // console.log('putting', `${baseUrl}/${blog.id}`, { blog, config });
   const response = await axios.put(
-     `${baseUrl}/${blog.id}`, blog, config
+    `${baseUrl}/${blog.id}`, blog, config
   )
   return response.data
 }
