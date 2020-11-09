@@ -1,3 +1,24 @@
+/**
+ * requestLogger.
+ * pre-cond middlewares: JSON, tokenExtractor
+ * @param {} req
+ * @param {} _res
+ * @param {} next
+ */
+const requestLogger = (req, _res, next) => {
+  // eslint-disable-next-line no-console
+  console.log(req.method);
+  // eslint-disable-next-line no-console
+  console.log('path:', req.path);
+  // eslint-disable-next-line no-console
+  console.log('has token?:', !!req.token);
+  // eslint-disable-next-line no-console
+  console.log('body:', req.body);
+  // eslint-disable-next-line no-console
+  console.log('---');
+  next();
+};
+
 // TODO
 // Q: How get error msg from Mongoose validator?
 
@@ -44,6 +65,7 @@ const tokenExtractor = (req, _res, next) => {
 };
 
 module.exports = {
+  requestLogger,
   errorHandler,
   tokenExtractor,
 };
