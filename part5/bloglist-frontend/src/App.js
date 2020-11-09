@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Notifications from './components/Notifications'
-import Togglable from './components/Togglable'
-import AddBlogForm from './components/AddBlogForm'
-import Blog from './components/Blog'
-import LoginForm from './components/LoginForm'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import React, { useState, useEffect, useRef } from 'react';
+import Notifications from './components/Notifications';
+import Togglable from './components/Togglable';
+import AddBlogForm from './components/AddBlogForm';
+import Blog from './components/Blog';
+import LoginForm from './components/LoginForm';
+import blogService from './services/blogs';
+import loginService from './services/login';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const [notifications, setNotifications] = useState([])
+  const [blogs, setBlogs] = useState([]);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
-  const notificationId = useRef(0)
+  const notificationId = useRef(0);
   /**
    * popNotification.
    * Update notifications state of the App by adding and after some time
@@ -23,11 +23,12 @@ const App = () => {
    * @param {{ type: "error" | "success", content: string}} notification
    */
   const popNotification = (notification) => {
-    const id = ++notificationId.current
+    // eslint-disable-next-line no-plusplus
+    const id = ++notificationId.current;
     setNotifications(notifications.concat({
       ...notification,
       id,
-    }))
+    }));
     // NOTE: when func is passed to setTimeout(), it captures vars
     // referenced in it (e.g. `notifications`), which may become *stale* before
     // setTimeout executes callback.
@@ -36,26 +37,27 @@ const App = () => {
     // NOTE: Chrome make me think that setTimeout does not work since changing
     // time length had no effect. At the end I just *refreshed the Chrome page*
     // and it started to work.
-    setTimeout(() => setNotifications((previousNotifications) =>
-      previousNotifications.filter((ntf) => ntf.id !== id)),
-    6_000)
-  }
+    setTimeout(() => setNotifications(
+      (previousNotifications) => previousNotifications.filter(
+        (ntf) => ntf.id !== id,
+      ),
+    ),
+    6_000);
+  };
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+    blogService.getAll().then((b) => setBlogs(b));
+  }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
-      const loggedUser = JSON.parse(loggedUserJSON)
+      const loggedUser = JSON.parse(loggedUserJSON);
       // console.log('useEffect: there is a saved user', { loggedUser });
-      setUser(loggedUser)
-      blogService.setToken(loggedUser.token)
+      setUser(loggedUser);
+      blogService.setToken(loggedUser.token);
     }
-  }, [])
+  }, []);
 
   // Q: why we nest handleLogin() func inside App component?
   // A: It is simpler since it depends on app state.
@@ -64,42 +66,42 @@ const App = () => {
   const handleLogin = async (event) => {
     // NOTE: REMEMBER to prevent default to avoid reloading (and url encoded
     // 'get' request) onSubmit
-    event.preventDefault()
+    event.preventDefault();
     try {
       const loggedUser = await loginService.login({
         username: event.target.username.value,
         password: event.target.password.value,
-      }) // axios parses json in response.data to an object
+      }); // axios parses json in response.data to an object
       // console.log({ loggedUser })
-      setUsername('')
-      setPassword('')
-      setUser(loggedUser)
-      blogService.setToken(loggedUser.token)
-      const loggedUserJSON = JSON.stringify(loggedUser)
-      window.localStorage.setItem('loggedBlogappUser', loggedUserJSON)
+      setUsername('');
+      setPassword('');
+      setUser(loggedUser);
+      blogService.setToken(loggedUser.token);
+      const loggedUserJSON = JSON.stringify(loggedUser);
+      window.localStorage.setItem('loggedBlogappUser', loggedUserJSON);
       popNotification({
         type: 'success',
-        content: `Logged in as ${loggedUser.username}`
-      })
+        content: `Logged in as ${loggedUser.username}`,
+      });
     } catch (err) {
-      console.log(err.response.data.error)
+      console.log(err.response.data.error);
       popNotification({
         type: 'error',
-        content: err.response.data.error
-      })
+        content: err.response.data.error,
+      });
     }
-  }
+  };
 
   const handleLogout = () => {
-    setUser(null)
-    window.localStorage.clear()
+    setUser(null);
+    window.localStorage.clear();
     popNotification({
       type: 'success',
-      content: 'Logged out'
-    })
-  }
+      content: 'Logged out',
+    });
+  };
 
-  const addBlogFormToggleRef = useRef()
+  const addBlogFormToggleRef = useRef();
 
   /**
    * @typedef Blog
@@ -113,50 +115,43 @@ const App = () => {
 
   const createBlog = async (blog) => {
     try {
-      const blogReturned = await blogService.create(blog)
-      setBlogs(blogs.concat(blogReturned))
+      const blogReturned = await blogService.create(blog);
+      setBlogs(blogs.concat(blogReturned));
       popNotification({
         type: 'success',
-        content: `Blog '${blogReturned.title}' was added`
-      })
+        content: `Blog '${blogReturned.title}' was added`,
+      });
     } catch (err) {
-      console.log('error is:', err.response.data.error)
+      console.log('error is:', err.response.data.error);
       popNotification({
         type: 'error',
-        content: err.response.data.error
-      })
-      throw err
+        content: err.response.data.error,
+      });
+      throw err;
     }
-  }
+  };
 
   const updateBlog = async (blog) => {
     try {
-      const blogReturned = await blogService.update(blog)
-      // FIXME: BUG: NOTE: Since update controller does not populate 'user'
-      // field and sends just id, But we have a comparison in Blog assuming user
-      // is populated and has 'username' - we get a BUG once blog is updated
-      // (like-ed)
-      // TODO: Fix in backend - either fix update controller to populate (do it)
-      // or fix login controller to send user Id w token and base comparison on
-      // user Id instead of username.
-      console.log({ blogReturned })
+      const blogReturned = await blogService.update(blog);
+      // console.log({ blogReturned });
       popNotification({
         type: 'success',
-        content: `You liked '${blogReturned.title}'`
-      })
+        content: `You liked '${blogReturned.title}'`,
+      });
       // Apply change to blogs array
-      setBlogs((blogs) => blogs.map((b) => {
-        return b.id === blog.id ? blogReturned : b
-      }))
+      setBlogs((blgs) => blgs.map(
+        (b) => (b.id === blog.id ? blogReturned : b),
+      ));
     } catch (err) {
-      console.log('error is:', err.response.data.error)
+      console.log('error is:', err.response.data.error);
       popNotification({
         type: 'error',
-        content: err.response.data.error
-      })
-      throw err
+        content: err.response.data.error,
+      });
+      throw err;
     }
-  }
+  };
 
   /**
    * @callback DeleteBlog
@@ -167,26 +162,27 @@ const App = () => {
    * @type {DeleteBlog}
    */
   const deleteBlog = async (blog) => {
+    // eslint-disable-next-line no-alert
     const isConfirmed = window.confirm(
-      `Do you want to delete blog ${blog.title} ${blog.author}?`
-    )
+      `Do you want to delete blog ${blog.title} ${blog.author}?`,
+    );
     if (isConfirmed) {
       try {
-        await blogService.deleteById(blog.id)
-        setBlogs((blogs) => blogs.filter((b) => b.id !== blog.id))
+        await blogService.deleteById(blog.id);
+        setBlogs((blgs) => blgs.filter((b) => b.id !== blog.id));
         popNotification({
           type: 'success',
-          content: `Blog ${blog.title} ${blog.author} deleted`
-        })
+          content: `Blog ${blog.title} ${blog.author} deleted`,
+        });
       } catch (err) {
-        console.log('error is:', err.response.data.error)
+        console.log('error is:', err.response.data.error);
         popNotification({
           type: 'error',
-          content: err.response.data.error
-        })
+          content: err.response.data.error,
+        });
       }
     }
-  }
+  };
 
   if (!user) {
     return (
@@ -201,23 +197,28 @@ const App = () => {
           setPassword={setPassword}
         />
       </div>
-    )
+    );
   }
   return (
     <div>
       <Notifications notifications={notifications} />
       <div>
-        <p>{user.username} logged in</p>
+        <p>
+          {user.username}
+          {' '}
+          logged in
+        </p>
         <button type="button" onClick={handleLogout}>Logout</button>
       </div>
       <Togglable ref={addBlogFormToggleRef} buttonLabel="Add Blog">
+        {/* { console.log('ToggleRef after ref assignment', addBlogFormToggleRef) } */}
         <AddBlogForm
           createBlog={createBlog}
           togglableRef={addBlogFormToggleRef}
         />
       </Togglable>
       <h2>Blogs</h2>
-      {[ ...blogs ]
+      {[...blogs]
         // NOTE: sort is in-place algoritm, if called on a state array,
         // it will mutate the state array which is a BAD thing.
         // Here we deep copy, then sort.
@@ -226,7 +227,7 @@ const App = () => {
         // A bad alternative with noticable lag is calling setState inside
         // useEffect.
         .sort((a, b) => b.likes - a.likes) // ascending order
-        .map(blog =>
+        .map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
@@ -234,10 +235,9 @@ const App = () => {
             deleteBlog={deleteBlog}
             currentUsername={user.username}
           />
-        )}
+        ))}
     </div>
-  )
+  );
+};
 
-}
-
-export default App
+export default App;

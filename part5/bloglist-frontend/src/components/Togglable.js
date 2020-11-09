@@ -1,25 +1,27 @@
-import React, { useState } from 'react'
-import { useImperativeHandle, forwardRef } from 'react'
-import PropTypes from 'prop-types'
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
+
+import PropTypes from 'prop-types';
 
 const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
   const toggleVisibility = () => {
-    setVisible(!visible)
-  }
+    setVisible(!visible);
+  };
 
-  useImperativeHandle(ref, () => ({ toggleVisibility }))
+  useImperativeHandle(ref, () => ({ toggleVisibility }));
   // inline css for jsx
-  const showWhenIsVisible = { display: visible ? '' : 'none' }
-  const showWhenNotVisible = { display: visible ? 'none' : '' }
+  const showWhenIsVisible = { display: visible ? '' : 'none' };
+  const showWhenNotVisible = { display: visible ? 'none' : '' };
   return (
     <div>
       <div style={showWhenIsVisible}>
         {children}
         <button
           type="button"
-          onClick={ () => toggleVisibility() }
+          onClick={() => toggleVisibility()}
         >
           Cancel
         </button>
@@ -27,19 +29,19 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
       <div style={showWhenNotVisible}>
         <button
           type="button"
-          onClick={ () => toggleVisibility() }
+          onClick={() => toggleVisibility()}
         >
           {buttonLabel}
         </button>
       </div>
     </div>
-  )
-})
+  );
+});
 
-Togglable.displayName = 'Togglable'
+Togglable.displayName = 'Togglable';
 
 Togglable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
-}
+  buttonLabel: PropTypes.string.isRequired,
+};
 
-export default Togglable
+export default Togglable;
