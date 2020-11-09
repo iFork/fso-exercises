@@ -11,7 +11,9 @@ const User = require('../models/user');
 blogRouter.get('/', async (_request, response) => {
   const blogs = await Blog
     .find({})
-    .populate('user', { username: 1, name: 1 });
+    // NOTE: `populate` keeps original value of the field (i.e. id) along with
+    // the 'populated' fields. Having `id: 1` or not, is the same.
+    .populate('user', { /* id: 1, */ username: 1, name: 1 });
     // .exec();
   response.json(blogs);
 });
@@ -108,6 +110,9 @@ blogRouter.put('/:id', async (request, response, _next) => {
     )
     .orFail(); // otherwise no match returns `null` w status code 200
   // console.log('savedBlog', savedBlog.toJSON());
-  response.status(200).json(savedBlog);
+  const responsePayload = await savedBlog
+    .populate('user', { username: 1, name: 1 })
+    .execPopulate();
+  response.status(200).json(responsePayload);
 });
 module.exports = blogRouter;
