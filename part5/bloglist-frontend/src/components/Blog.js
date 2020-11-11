@@ -33,7 +33,9 @@ const Blog = ({
       // NOTE: response is applied to blogs array state of App inside
       // updateBlog() since `blogs` state is owned by App.
     } catch {
-      // catches also payload error due to missing user property
+      // NOTE: catches also payload error due to missing user property
+      // That error should be dealt with (notified) here
+      console.log('Error: Like cannot be casted');
       // reset back in case of request fails
       setLikes(updatedLikes - 1);
     }
