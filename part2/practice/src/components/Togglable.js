@@ -20,7 +20,7 @@ const Togglable = forwardRef( ({ buttonLabel, children }, ref) => {
 
   return (
     <div>
-      <div style={showWhenIsVisible}>
+      <div data-testid='togglableContent' style={showWhenIsVisible}>
         {children}
         <button
           type="button"
