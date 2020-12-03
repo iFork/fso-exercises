@@ -20,15 +20,15 @@ describe('<Togglable />', () => {
     )
   })
 
-  test('childer are rendered', () => {
+  test('children are rendered', () => {
     let togglableDiv = component.getByTestId(testIdOfTogglableContent)
     expect(togglableDiv).toBeInTheDocument()
   })
-  test('childer are hidden initially', () => {
+  test('children are hidden initially', () => {
     let togglableDiv = component.getByTestId(testIdOfTogglableContent)
     expect(togglableDiv).toHaveStyle('display: none')
   })
-  test('childer are shown and hidden on clicks on toggler button', () => {
+  test('children are shown and hidden on clicks on toggler button', () => {
     // component.debug();
     let showButton = component.getByText(buttonLabelShow)
     fireEvent.click(showButton)

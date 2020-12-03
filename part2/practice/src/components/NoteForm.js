@@ -10,7 +10,7 @@ const NoteForm = ({ createNote, togglableRef }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log('addNote called w/ event:', event.target)
+    // console.log('addNote called w/ event:', event.target)
     const newNoteObj =
             {
               content: newNote,
