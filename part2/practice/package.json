@@ -10,7 +10,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "^3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "jest-environment-jsdom-sixteen": "^1.0.3",
     "json-server": "^0.16.2"
   }
 }
