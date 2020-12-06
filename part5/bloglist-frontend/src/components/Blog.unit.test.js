@@ -75,4 +75,13 @@ describe('<Blog />', () => {
     expect(screen.queryByText(blog.user.name, { exact: false }))
       .not.toBeInTheDocument();
   });
-})
+  test('Details are displayed after button to view details is clicked', () => {
+    fireEvent.click(screen.getByTestId('viewExpander'));
+    expect(screen.queryByText(String(blog.likes), { exact: false }))
+      .toBeInTheDocument();
+    expect(screen.queryByText(blog.url, { exact: false }))
+      .toBeInTheDocument();
+    expect(screen.queryByText(blog.user.name, { exact: false }))
+      .toBeInTheDocument();
+  });
+});

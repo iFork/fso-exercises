@@ -65,6 +65,7 @@ const Blog = ({
       {' '}
       {blog.author}
       <button
+        data-testid="viewExpander"
         type="button"
         onClick={() => toggleViewDetailed()}
       >
@@ -98,6 +99,7 @@ const Blog = ({
       {' '}
       {blog.author}
       <button
+        data-testid="viewColapser"
         type="button"
         onClick={() => toggleViewDetailed()}
       >
