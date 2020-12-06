@@ -84,4 +84,11 @@ describe('<Blog />', () => {
     expect(screen.queryByText(blog.user.name, { exact: false }))
       .toBeInTheDocument();
   });
+  test('Like (update) handler is called as many times as like is clicked', () => {
+    // open up detailed view to see like button
+    fireEvent.click(screen.getByTestId('viewExpander'));
+    fireEvent.click(screen.getByText('Like'));
+    fireEvent.click(screen.getByText('Like'));
+    expect(updateBlog).toHaveBeenCalledTimes(2);
+  });
 });
