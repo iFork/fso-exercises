@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { screen, prettyDOM } from '@testing-library/dom';
-import '@testing-library/jest-dom/extend-expect'
+import '@testing-library/jest-dom/extend-expect';
 import Blog from './Blog';
 
 describe('<Blog />', () => {
