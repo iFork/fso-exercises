@@ -3,6 +3,7 @@ module.exports = {
       "browser": true,
       "es6": true,
       // "jest/globals": true 
+      "cypress/globals": true,
   },
   "extends": [ 
   	  "react-app", // to avoid false positives
@@ -19,6 +20,7 @@ module.exports = {
   "plugins": [
       "react",
       // "jest"
+      "cypress",
   ],
   "rules": {
       "indent": [
@@ -46,7 +48,13 @@ module.exports = {
           "error", { "before": true, "after": true }
       ],
       "no-console": 0,
-      "react/prop-types": 0
+      "react/prop-types": 0,
+      // cypress
+      "cypress/no-assigning-return-values": "error",
+      "cypress/no-unnecessary-waiting": "error",
+      "cypress/assertion-before-screenshot": "warn",
+      "cypress/no-force": "warn",
+      "cypress/no-async-tests": "error"
   },
   "settings": {
     "react": {
