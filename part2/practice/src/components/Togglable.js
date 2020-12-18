@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
+function normalizeAttribute(attribute) {
+  return attribute.trim().replace(/\s+/g, '-').toLowerCase()
+}
+
 const Togglable = forwardRef( ({ buttonLabel, children }, ref) => {
   const [visible, setVisible] = useState(false)
 
@@ -31,6 +35,9 @@ const Togglable = forwardRef( ({ buttonLabel, children }, ref) => {
       </div>
       <div style={hideWhenIsVisible}>
         <button
+          // TODO: apply some normalization to buttonLabel before using
+          // in attribute (lowercase, spaces to kebab-case)
+          data-testid={`toggle__${normalizeAttribute(buttonLabel)}`}
           type="button"
           onClick={toggleVisibility}
         >

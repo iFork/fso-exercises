@@ -44,7 +44,10 @@ export const LoginForm = ({ loginCb }) => {
           onChange={({ target }) => setPassword(target.value)} />
       </div>
       <div>
-        <button type="submit">
+        <button
+          // NOTE: adopting BEM-like naming conventions
+          data-testid="login-form__submit-button"
+          type="submit">
                         Login
         </button>
       </div>
