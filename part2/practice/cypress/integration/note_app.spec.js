@@ -22,4 +22,20 @@ describe('Note app', function() {
     cy.get('[data-testid=login-form__submit-button]').click()
     cy.contains(/logged in as roota/i)
   })
+  describe('when logged in', function() {
+    beforeEach(function() {
+      cy.get('[data-testid=toggle__login]').click()
+      cy.get('#id_username').type('roota')
+      cy.get('#id_password').type('pass')
+      cy.get('[data-testid=login-form__submit-button]').click()
+    })
+    it('can create new note', function() {
+      const noteTitle = 'note created by cypress'
+      cy.get('[data-testid=toggle__add-note]').click()
+      // to clean field before typing?
+      cy.get('#note_title').type(noteTitle)
+      cy.contains(/add note/i).click()
+      cy.contains(noteTitle)
+    })
+  })
 })
