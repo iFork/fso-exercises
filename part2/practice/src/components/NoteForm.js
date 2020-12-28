@@ -15,7 +15,9 @@ const NoteForm = ({ createNote, togglableRef }) => {
             {
               content: newNote,
               date: new Date().toISOString(),
-              important: Math.random() > 0.5
+              // Note: remove random part to get rid of flaky test
+              // important: Math.random() > 0.5
+              important: false
             }
     createNote(newNoteObj)
     setNewNote('')

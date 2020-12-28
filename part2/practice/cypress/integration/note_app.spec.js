@@ -1,7 +1,18 @@
 
 describe('Note app', function() {
   beforeEach(function () {
-    cy.visit('localhost:3000')
+    const baseUrl = 'localhost:3000'
+    cy.request('POST', `${baseUrl}/api/testing/reset`)
+    const user = {
+      username: 'roota',
+      name: 'Root TestUser',
+      password: 'pass'
+    }
+    // NOTE: `await`ing cy.request and assigning its return value breaks further
+    // cy.<command> calls.
+    // const resp = await cy.request('POST', `${baseUrl}/api/users`, user)
+    cy.request('POST', `${baseUrl}/api/users`, user)
+    cy.visit(baseUrl)
   })
   it('front page can be opened', function() {
     cy.contains('Notes')
@@ -36,6 +47,24 @@ describe('Note app', function() {
       cy.get('#note_title').type(noteTitle)
       cy.contains(/add note/i).click()
       cy.contains(noteTitle)
+    })
+    describe('and a note exists', function() {
+      const noteTitle = 'another note created by cypress'
+      beforeEach(function () {
+        // Create dummy notes : from frontend as api requires auth header
+        // which is handed in response to login.
+        cy.get('[data-testid=toggle__add-note]').click()
+        // to clean field before typing?
+        cy.get('#note_title').type(noteTitle)
+        cy.contains(/add note/i).click()
+      })
+      it('can toggle importance', function() {
+        cy.contains(noteTitle)
+          .contains(/make important/i)
+          .click()
+        cy.contains(noteTitle)
+          .contains(/make not important/i)
+      })
     })
   })
 })
