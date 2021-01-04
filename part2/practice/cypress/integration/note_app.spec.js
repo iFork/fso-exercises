@@ -19,7 +19,7 @@ describe('Note app', function() {
     // cy.contains(/login/i).click() // first is not toggler but submitter
   })
   it('login form can be opened', function() {
-    cy.get('[data-testid=toggle__login]').click()
+    cy.get('[data-testid=login__toggle]').click()
     // NOTE: following does not check visibility
     // Q: Is visibility check by jest-dom's toBeVisible() in unit test
     // sufficient?
@@ -27,22 +27,22 @@ describe('Note app', function() {
     cy.contains(/password/i)
   })
   it('user can log in', function() {
-    cy.get('[data-testid=toggle__login]').click()
+    cy.get('[data-testid=login__toggle]').click()
     cy.get('#id_username').type('roota')
     cy.get('#id_password').type('pass')
-    cy.get('[data-testid=login-form__submit-button]').click()
+    cy.get('[data-testid=login__submit-button]').click()
     cy.contains(/logged in as roota/i)
   })
   describe('when logged in', function() {
     beforeEach(function() {
-      cy.get('[data-testid=toggle__login]').click()
+      cy.get('[data-testid=login__toggle]').click()
       cy.get('#id_username').type('roota')
       cy.get('#id_password').type('pass')
-      cy.get('[data-testid=login-form__submit-button]').click()
+      cy.get('[data-testid=login__submit-button]').click()
     })
     it('can create new note', function() {
       const noteTitle = 'note created by cypress'
-      cy.get('[data-testid=toggle__add-note]').click()
+      cy.get('[data-testid=add-note__toggle]').click()
       // to clean field before typing?
       cy.get('#note_title').type(noteTitle)
       cy.contains(/add note/i).click()
@@ -53,7 +53,7 @@ describe('Note app', function() {
       beforeEach(function () {
         // Create dummy notes : from frontend as api requires auth header
         // which is handed in response to login.
-        cy.get('[data-testid=toggle__add-note]').click()
+        cy.get('[data-testid=add-note__toggle]').click()
         // to clean field before typing?
         cy.get('#note_title').type(noteTitle)
         cy.contains(/add note/i).click()

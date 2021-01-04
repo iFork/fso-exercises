@@ -46,7 +46,7 @@ export const LoginForm = ({ loginCb }) => {
       <div>
         <button
           // NOTE: adopting BEM-like naming conventions
-          data-testid="login-form__submit-button"
+          data-testid="login__submit-button"
           type="submit">
                         Login
         </button>

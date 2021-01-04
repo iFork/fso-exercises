@@ -35,9 +35,9 @@ const Togglable = forwardRef( ({ buttonLabel, children }, ref) => {
       </div>
       <div style={hideWhenIsVisible}>
         <button
-          // TODO: apply some normalization to buttonLabel before using
+          // apply normalization to buttonLabel before using
           // in attribute (lowercase, spaces to kebab-case)
-          data-testid={`toggle__${normalizeAttribute(buttonLabel)}`}
+          data-testid={`${normalizeAttribute(buttonLabel)}__toggle`}
           type="button"
           onClick={toggleVisibility}
         >
