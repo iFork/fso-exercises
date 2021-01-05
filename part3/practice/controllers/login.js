@@ -19,7 +19,7 @@ loginRouter.post('/', async (req, res, next) => {
     if (!passwordIsCorrect) {
         return res
             .status(401)
-            .json({ error: 'Username or passord is invalid' });
+            .json({ error: 'Username or password is invalid' });
         // TODO: OR throw error for next(err) or express-async-error
     }
     const tokenPayload = {
