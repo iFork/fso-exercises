@@ -41,3 +41,20 @@ Cypress.Commands.add('login', (username, password) => {
     cy.visit('http://localhost:3000')
   })
 })
+Cypress.Commands.add('createNote', ({ content, important }) => {
+  // get token from localStorage
+  const token = JSON.parse(localStorage.getItem('loggedNoteappUser')).token
+  cy.request({
+    method: 'POST',
+    url: '/api/notes',
+    body: {
+      content,
+      important,
+    },
+    headers: {
+      Authorization: `bearer ${token}`
+    }
+  })
+  // reload page to see updated state
+  cy.visit('http://localhost:3000')
+})

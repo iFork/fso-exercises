@@ -75,12 +75,7 @@ describe('Note app', function() {
     describe('and a note exists', function() {
       const noteTitle = 'another note created by cypress'
       beforeEach(function () {
-        // Create dummy notes : from frontend as api requires auth header
-        // which is handed in response to login.
-        cy.get('[data-testid=add-note__toggle]').click()
-        // to clean field before typing?
-        cy.get('#note_title').type(noteTitle)
-        cy.contains(/add note/i).click()
+        cy.createNote({ content: noteTitle, important: false })
       })
       it('can toggle importance', function() {
         cy.contains(noteTitle)
