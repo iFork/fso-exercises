@@ -62,22 +62,7 @@ describe('Note app', function() {
   })
   describe('when logged in', function() {
     beforeEach(function() {
-      cy.request('POST', '/api/login', {
-        username: 'roota',
-        password: 'pass',
-      }).then(({ body }) => {
-        // store user info in localStorage, like frontend does
-        localStorage.setItem('loggedNoteappUser', JSON.stringify(body))
-        // Or, alternatively, 'anti-simple' way:
-        // NOTE: remeber that cy.window() is async
-        // Wrong -> cy.window().localStorage.setItem(..)
-        // cy.window()
-        //   .then((win) => {
-        //     win.localStorage.setItem('loggedNoteappUser', JSON.stringify(body))
-        //   })
-        //reload page to trigger effect hook to read from localStorage
-        cy.visit('http://localhost:3000')
-      })
+      cy.login('roota', 'pass')
     })
     it('can create new note', function() {
       const noteTitle = 'note created by cypress'
