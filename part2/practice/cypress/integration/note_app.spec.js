@@ -73,15 +73,35 @@ describe('Note app', function() {
       cy.contains(noteTitle)
     })
     describe('and a note exists', function() {
-      const noteTitle = 'another note created by cypress'
+      const noteTitle1 = 'first note'
+      const noteTitle2 = 'second note'
+      const noteTitle3 = 'third note'
       beforeEach(function () {
-        cy.createNote({ content: noteTitle, important: false })
+        cy.createNote({ content: noteTitle1, important: false })
+        cy.createNote({ content: noteTitle2, important: false })
+        cy.createNote({ content: noteTitle3, important: false })
       })
       it('can toggle importance', function() {
-        cy.contains(noteTitle)
+        cy.contains(noteTitle2)
+          .parent() //.as('noteNode')
+          // .contains(/make important/i)
+          // NOTE: But alias elements as soon as possible instead of further
+          // down a chain of commands
+          .find('button').as('theButton')
+          // .should('contain', 'Make important')
+          // NOTE: find() yields jQuery object therefore `match` fails, since
+          // it requires string subject.
+          // Invoke method of a yielded jQuery object to get text.
+          // This `invoke` changes the subject, chaining expecting node, breaks
+          // .invoke('text') 
+          // .should('match', /make important/i)
+          // NOTE: `contains` works with regex, but not 'contain' chainer (from
+          // Chai).
           .contains(/make important/i)
           .click()
-        cy.contains(noteTitle)
+        // cy.get('@noteNode')
+        cy.get('@theButton')
+          // .should('contain', 'Make not important')
           .contains(/make not important/i)
       })
     })
