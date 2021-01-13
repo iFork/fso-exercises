@@ -72,5 +72,42 @@ describe('Bloglist app', function () {
       cy.get('.blog.compactView')
         .contains('Test Title').contains('Test Author').contains(/view/i);
     });
+    describe.only('And a blog exists', function () {
+      beforeEach(function () {
+        // TODO: move blog creator into a cypress/support/commands
+        const { token } = JSON.parse(localStorage.getItem('loggedBlogappUser'));
+        cy.request({
+          method: 'POST',
+          url: '/api/blogs',
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          body: {
+            title: 'Test Title',
+            author: 'Test Author',
+            url: 'http://test.url',
+          },
+        });
+        // reload page to get updated blog list
+        cy.visit('/');
+      });
+      it('A blog can be liked', function () {
+        cy.get('.blog.compactView')
+          // .contains(/view/i).click();
+          .contains('Test Title').within(() => {
+            // expand blog
+            // TODO: existing data-testid values do not follow BEM naming
+            // convention, modifying it in component code will break also jest unit tests.
+            cy.get('[data-testid=viewExpander]').click();
+          });
+        cy.get('.blog.detailedView')
+          .contains('Test Title').within(() => {
+            cy.contains(/likes/i).contains('0');
+            // from buttons get one that contains 'like'
+            cy.get('button').contains(/like/i).click();
+            cy.contains(/likes/i).contains('1');
+          });
+      });
+    });
   });
 });
