@@ -4,6 +4,17 @@ import React, { useState, useImperativeHandle, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
+/**
+ * Normalize string to be suitable for use as attribute value in HTML.
+ * Replace space with dashes, make lowercase.
+ *
+ * @param {String} attributeName - string to be normalized.
+ * @return {String} normalized string.
+ */
+function normalizeAttributeName(attributeName) {
+  // regex replace, lower case
+  return attributeName.trim().replace(/\s+/, '-').toLowerCase();
+}
 const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
   const [visible, setVisible] = useState(false);
 
@@ -28,6 +39,7 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
       </div>
       <div style={showWhenNotVisible}>
         <button
+          data-testid={`${normalizeAttributeName(buttonLabel)}__toggle`}
           type="button"
           onClick={() => toggleVisibility()}
         >

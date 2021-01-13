@@ -60,7 +60,7 @@ const Blog = ({
   };
 
   const compactView = (
-    <div>
+    <div className="blog compactView">
       {blog.title}
       {' '}
       {blog.author}
@@ -94,7 +94,7 @@ const Blog = ({
   };
 
   const detailedView = (
-    <div>
+    <div className="blog detailedView">
       {blog.title}
       {' '}
       {blog.author}
