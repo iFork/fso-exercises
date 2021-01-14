@@ -111,6 +111,24 @@ describe('Bloglist app', function () {
       });
     });
   });
+  describe.only('When logged in as userB', function () {
+    beforeEach(function () {
+      cy.login(userA);
+      userA.blogs.forEach((blog) => {
+        cy.createBlog(blog);
+      });
+      // no need to logout since login's overwrite of localStorage is enough
+      cy.login(userB);
+    });
+    it('userB cannot delete blog of userA', function () {
+      cy.get('.blog.compactView')
+        .contains(userA.blogs[0].title).within(() => {
+          cy.get('button').contains(/view/i).click();
+        });
+      cy.get('.blog.detailedView')
+        .contains(userA.blogs[0].title).within(() => {
+          cy.get('button').contains((/delete/i)).should('not.exist');
+        });
     });
   });
 });
