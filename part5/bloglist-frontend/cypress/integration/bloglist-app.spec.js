@@ -106,6 +106,21 @@ describe('Bloglist app', function () {
             cy.contains(/likes/i).contains('1');
           });
       });
+      it('userA can delete her blog', function () {
+        cy.get('.blog.compactView')
+          .contains(userA.blogs[0].title).within(() => {
+            cy.get('[data-testid=viewExpander]').click();
+          });
+        cy.get('.blog.detailedView')
+          .contains(userA.blogs[0].title).within(() => {
+            cy.get('button').contains(/delete/i).click();
+          });
+
+        cy.get('.blog')
+          .contains(userA.blogs[0].title).should('not.exist');
+      });
+    });
+  });
     });
   });
 });
