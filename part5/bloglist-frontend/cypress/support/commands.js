@@ -28,6 +28,19 @@ Cypress.Commands.add('createUser', ({ username, name, password }) => {
   cy.request('POST', '/api/users', { username, name, password });
 });
 
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request('POST', '/api/login', { username, password })
+    .then((resp) => {
+      // set localStorage since it was front-end's responsibility to set it
+      localStorage.setItem(
+        'loggedBlogappUser',
+        JSON.stringify(resp.body),
+      );
+      // reload page for effect hook to process token.
+      cy.visit('/');
+    });
+});
+
 Cypress.Commands.add('createBlog', (blog) => {
   const { token } = JSON.parse(localStorage.getItem('loggedBlogappUser'));
   cy.request({

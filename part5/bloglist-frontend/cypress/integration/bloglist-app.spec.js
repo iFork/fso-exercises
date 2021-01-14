@@ -55,17 +55,7 @@ describe('Bloglist app', function () {
   describe('When logged in as userA', function () {
     beforeEach(function () {
       // login with api, not UI
-      const { username, password } = userA;
-      cy.request('POST', '/api/login', { username, password })
-        .then((resp) => {
-          // set localStorage since it was front-end's responsibility to set it
-          localStorage.setItem(
-            'loggedBlogappUser',
-            JSON.stringify(resp.body),
-          );
-          // reload page for effect hook to process token.
-          cy.visit('/');
-        });
+      cy.login(userA);
     });
     it('A blog can be created', function () {
       // cy.contains(/add blog/i).click();
