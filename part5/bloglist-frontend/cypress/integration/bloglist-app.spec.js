@@ -20,8 +20,8 @@ describe('Bloglist app', function () {
     // clear db with api for testing
     cy.request('POST', '/api/testing/reset');
     // seed db with users
-    cy.request('POST', '/api/users', userA);
-    cy.request('POST', '/api/users', userB);
+    cy.createUser(userA);
+    cy.createUser(userB);
     cy.visit('/');
   });
   describe('Login', function () {
@@ -83,15 +83,8 @@ describe('Bloglist app', function () {
     });
     describe('And userA already has blogs', function () {
       beforeEach(function () {
-        // TODO: move blog creator into a cypress/support/commands
-        const { token } = JSON.parse(localStorage.getItem('loggedBlogappUser'));
-        cy.request({
-          method: 'POST',
-          url: '/api/blogs',
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-          body: userA.blogs[0],
+        userA.blogs.forEach((blog) => {
+          cy.createBlog(blog);
         });
         // reload page to get updated blog list
         cy.visit('/');
