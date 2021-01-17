@@ -5,9 +5,27 @@ describe('Bloglist app', function () {
     password: 'passA',
     blogs: [
       {
-        title: 'Test Title',
+        title: 'Test Title 1',
         author: 'Test Author',
         url: 'http://test.url',
+      },
+      {
+        title: 'Test Title 2',
+        author: 'Test Author',
+        url: 'http://test.url',
+        likes: 3,
+      },
+      {
+        title: 'Test Title 3',
+        author: 'Test Author',
+        url: 'http://test.url',
+        likes: 5,
+      },
+      {
+        title: 'Test Title 4',
+        author: 'Test Author',
+        url: 'http://test.url',
+        likes: 4,
       },
     ],
   };
@@ -109,9 +127,48 @@ describe('Bloglist app', function () {
         cy.get('.blog')
           .contains(userA.blogs[0].title).should('not.exist');
       });
+      it('Blogs are sorted by likes in descending order', function () {
+        // expand all blogs
+        // cy.get('.blog.compactView')
+        //   .each(($blog) => {
+        //     cy.wrap($blog).within(() => {
+        //       cy.get('[data-testid=viewExpander]').click();
+        //     });
+        //   });
+        // Or, alternatively:
+        cy.get('[data-testid=viewExpander]').click({ multiple: true });
+
+        // get likes
+        cy.get('.blog.detailedView')
+          .then(($blogs) => {
+            // NOTE: Pay Attention to the *Signature of the callback* of
+            // jQuery's .map()
+            const likes = $blogs.map((_i, blog) => {
+              // NOTE: 2nd arg of the callback or `this` in this callback are DOM
+              // elements, not jQuery objects. Wrap it in jQuery for jQuery
+              // interface, e.g. `$(this).text()`.
+              // TODO?: write as anon func, not arrow to not get involved with `this` nuances
+
+              const regexpLikes = /likes\s*(\d+)/;
+
+              // NOTE: call Cypress's jQuery like `cy.$$() or (for full jQuery)
+              // `Cypress.$()` and construct new jQuery object
+              // NOTE: following (cy.$$()) is synchronous jQuery, not async
+              // cypress therefore I assign its return value
+              // eslint-disable-next-line cypress/no-assigning-return-values
+              const match = cy.$$(blog).text().match(regexpLikes);
+              const likeCount = parseInt(match[1], 10);
+              // cy.log(likeCount);
+              return likeCount;
+            })
+              .get(); // get a plain array from jQuery object
+            const likesInDescendingOrder = [...likes].sort((a, b) => b - a);
+            expect(likes).to.be.deep.equal(likesInDescendingOrder);
+          });
+      });
     });
   });
-  describe.only('When logged in as userB', function () {
+  describe('When logged in as userB', function () {
     beforeEach(function () {
       cy.login(userA);
       userA.blogs.forEach((blog) => {

@@ -226,7 +226,7 @@ const App = () => {
         // function to always put in state already sorted array? or useMemo?
         // A bad alternative with noticable lag is calling setState inside
         // useEffect.
-        .sort((a, b) => b.likes - a.likes) // ascending order
+        .sort((a, b) => b.likes - a.likes) // descending order
         .map((blog) => (
           <Blog
             key={blog.id}
