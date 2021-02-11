@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import App from './App';
 import store from './store';
 
 // Steps:
 // import redux (createStore) -- in index?
 // define reducer func
+// define action creators along with a reducer
 // create store w/ reducer callback
-// in component - onClick - dispatch actions to the store
+// in component - onClick - dispatch actions (via action creators) to the store
 // subscribe render callback w/ store (completes substitution of useState hook)
 
 store.dispatch({
@@ -17,35 +19,15 @@ store.dispatch({
     importance: false
   }
 })
-
-store.dispatch({
-  type: 'NEW_NOTE',
-  payload: {
-    id: 2,
-    content: 'Actions are dispatched to store',
-    importance: true
-  }
-})
-
-
-function App() {
-  // const [count, setCount] = useState(0);
-
-  return (
-    <div className="App">
-      <header className="App-header">Notes</header>
-      <ul>
-        {store.getState().map(note => {
-          return (
-            <li key={note.id}>
-              {note.content} {note.importance ? <strong>Important</strong> : ''}
-            </li>
-          )
-        })}
-      </ul>
-    </div>
-  );
-}
+//
+// store.dispatch({
+//   type: 'NEW_NOTE',
+//   payload: {
+//     id: 2,
+//     content: 'Actions are dispatched to store',
+//     importance: true
+//   }
+// })
 
 
 function renderApp() { 
