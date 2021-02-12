@@ -1,10 +1,11 @@
+import { useDispatch } from 'react-redux';
 import { createNote } from './reducers/noteReducer'
-import store from './store';
-// TODO: pass store via <Provider>
 
-function NewNote () { 
+function AddNote () { 
   // this is *uncontrolled form*, in react terms, since source of truth is DOM,
   // not react state (i.e. value of input node does not come from prop/state)
+  // TODO: harmonize - const or let ?? 
+  const dispatch = useDispatch();
   let noteInput = null;
   function handleSubmit (e) {
     // NOTE: if no `preventDefault`, page is reloaded and if store is not
@@ -18,7 +19,7 @@ function NewNote () {
     // or, alternatively, using *createRef() or callback refs* to hold a reference
     // to a specific DOM node.
     // TODO: Q: Check for null noteInput or not?
-    store.dispatch(createNote(noteInput.value));
+    dispatch(createNote(noteInput.value));
     noteInput.value = '';
   }
 
@@ -36,4 +37,4 @@ function NewNote () {
   )
 }
 
-export default NewNote;
+export default AddNote;
