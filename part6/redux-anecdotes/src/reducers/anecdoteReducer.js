@@ -19,14 +19,9 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-//TODO
-// add action creator vote
-// add case in reducer for vote
-// dispatch vote from component
-//
 // TODO: Q: Research unnecessary / excessive re-rendering caused by replacing all
-// state with pure reducers. Maybe store slices are for helping with that?
-// e.g. [Immutable Data | Redux](https://redux.js.org/faq/immutable-data#how-can-immutability-in-your-reducers-cause-components-to-render-unnecessarily)
+// state in pure reducer. Maybe store slices are for helping with that?
+// e.g. see [Immutable Data | Redux](https://redux.js.org/faq/immutable-data#how-can-immutability-in-your-reducers-cause-components-to-render-unnecessarily)
 //
 const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
