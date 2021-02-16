@@ -32,9 +32,10 @@ function Notes () {
     <ul>
       {notes.map(note => {
         return (
-          <li>
+          // NOTE: key attribute belongs to the top/precise element being
+          // mapped to array, to <li> here, not <Note> nested in <li>.
+          <li key={note.id}>
             <Note
-              key={note.id}
               note={note}
               handleImportanceToggling={
                 () => dispatch(toggleImportance(note.id))
