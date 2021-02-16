@@ -1,11 +1,24 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { vote } from '../reducers/anecdoteReducer'
+import {
+  setVoteNotification,
+  removeNotification
+} from '../reducers/notificationReducer';
 
 
 function AnecdoteList () { 
   const anecdotes = useSelector(state => state.anecdotes)
   const dispatch = useDispatch()
+  
+  const handleVote = (anecdote) => {
+    dispatch(vote(anecdote.id))
+    dispatch(setVoteNotification(anecdote.content))
+    // TODO: removing is buggy. When it is called it clears everything
+    // irrespective when it was added.
+    // Better implement notifications with id-s and remove by id?
+    setTimeout(() => dispatch(removeNotification()), 5000)
+  }  
 
   // sort by descending order
   const anecdotesSorted = [...anecdotes].sort((a, b) => b.votes - a.votes)
@@ -20,7 +33,7 @@ function AnecdoteList () {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => dispatch(vote(anecdote.id))}>vote</button>
+            <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
       )}
