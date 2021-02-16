@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import App from './App';
 import noteReducer from './reducers/noteReducer';
 import filterReducer from './reducers/filterReducer';
@@ -27,9 +28,9 @@ const reducers = combineReducers({
 const store = createStore(
   reducers,
   // connect to Redux Dev Tools (extension of Chrome)
-  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ 
-    && window.__REDUX_DEVTOOLS_EXTENSION__()
+  // typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ 
+    // && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeWithDevTools()
 );
 
 
