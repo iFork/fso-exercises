@@ -1,7 +1,7 @@
 function Note ({ note, handleImportanceToggling }) {
   return (
     <div onClick={handleImportanceToggling}>
-      {note.content} {note.importance ? <strong>Important</strong> : ''}
+      {note.content} {note.important ? <strong>Important</strong> : ''}
     </div>
   )
 }

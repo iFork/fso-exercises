@@ -1,48 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import App from './App';
 import noteReducer from './reducers/noteReducer';
+import filterReducer from './reducers/filterReducer';
 
 
 // Steps:
-// import redux (createStore) -- in index?
-// define reducer func
+// import redux (createStore, combineReducers) -- in index?
+// define reducer funcs
 // define action creators along with a reducer
-// create store w/ reducer callback
+// combine reducers w/ a combineReducers() to have a complex/namespaced state
+// create store w/ (combined) reducers callback
 // wrap root component by <Provider> of react-redux and pass store as its prop.
 // in component:
-// useSelector() hook of react-redux to get slices of state and subscribe
-// component with store.
+// useSelector() hook of react-redux to get slices of state (like as namespaced
+// by combineReducers()) and subscribe component with store.
 // useDispatch() hook of redux to dispatch actions (via action creators)
 
+const reducers = combineReducers({
+  notes: noteReducer,
+  filter: filterReducer
+})
 // create store with a reducer callback
 const store = createStore(
-  noteReducer,
+  reducers,
   // connect to Redux Dev Tools (extension of Chrome)
   // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ 
     && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-store.dispatch({
-  type: 'NEW_NOTE',
-  payload: {
-    id: 1,
-    content: 'State management now is in redux',
-    importance: false
-  }
-})
-//
-// store.dispatch({
-//   type: 'NEW_NOTE',
-//   payload: {
-//     id: 2,
-//     content: 'Actions are dispatched to store',
-//     importance: true
-//   }
-// })
 
 
 // NOTE: wrapping render in renderApp() to pass a callback to store.subscribe() 

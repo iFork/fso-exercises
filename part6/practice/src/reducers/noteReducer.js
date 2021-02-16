@@ -1,5 +1,20 @@
 
-function noteReducer(state = [], action) {
+const initialState = [
+  {
+    id: 1,
+    content: 'State management now is in redux',
+    important: false
+  },
+  {
+    id: 2,
+    content: 'Actions are dispatched to store',
+    important: true
+  }
+]
+
+// NOTE: default state is required as redux needs to get initial state when
+// `undefined` is passed as state
+function noteReducer(state = initialState, action) {
   switch (action.type) {
     case 'NEW_NOTE':
       return state.concat(action.payload)
@@ -8,7 +23,7 @@ function noteReducer(state = [], action) {
       let [ noteToChange ] = state.filter(note => note.id === idToChange)
       let changedNote = {
         ...noteToChange,
-        importance: !noteToChange.importance
+        important: !noteToChange.important
       }
       return state.map(note => {
         return note.id === idToChange ? changedNote : note
@@ -36,7 +51,7 @@ export function createNote (content) {
     type: 'NEW_NOTE',
     payload: {
       id: generateId(),
-      importance: false,
+      important: false,
       content
     }
   }

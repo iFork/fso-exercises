@@ -17,7 +17,7 @@ describe('Note app', () => {
         payload: {
           id: 1,
           content: 'State management now is in redux',
-          importance: false
+          important: false
         }
       };
       // store.dispatch(action)
@@ -29,17 +29,17 @@ describe('Note app', () => {
       expect(newState).toContainEqual(action.payload);
       expect(newState).toHaveLength(1);
     })
-    test('Toggling importance of note w/ action TOGGLE_IMPORTANCE', () => {
+    test('Toggling important of note w/ action TOGGLE_IMPORTANCE', () => {
       let state = [ 
         {
           id: 1,
           content: 'State management now is in redux',
-          importance: false
+          important: false
         },
         {
           id: 2,
           content: 'Actions are dispatched to store',
-          importance: true
+          important: true
         }
       ];
       let action = {
@@ -61,19 +61,19 @@ describe('Note app', () => {
       expect(changedNote)
         .toEqual({
           // ...originalNote,
-          // importance: !originalNote.importance
+          // important: !originalNote.important
           id: 1,
           content: 'State management now is in redux',
-          importance: true
+          important: true
         })
       // or, equivalently
       expect(newState)
         .toContainEqual({
           ...originalNote,
-          importance: !originalNote.importance
+          important: !originalNote.important
           // id: 1,
           // content: 'State management now is in redux',
-          // importance: true
+          // important: true
         })
       expect(newState)
         .toContainEqual(untouchedNoteBefore);
