@@ -6,7 +6,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import App from './App';
 import noteReducer from './reducers/noteReducer';
 import filterReducer from './reducers/filterReducer';
-import noteService from './services/noteService'
 
 // Steps:
 // wire up json-server (bd.json, npm script)
@@ -25,10 +24,6 @@ const store = createStore(
     // && window.__REDUX_DEVTOOLS_EXTENSION__()
   composeWithDevTools()
 );
-
-// test noteService
-noteService.getAll()
-  .then((resp) => console.log(resp))
 
 
 // NOTE: wrapping render in renderApp() to pass a callback to store.subscribe() 

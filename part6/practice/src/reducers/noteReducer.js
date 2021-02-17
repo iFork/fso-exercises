@@ -1,10 +1,10 @@
 
-const initialState = []
-
 // NOTE: default state is required as redux needs to get initial state when
 // `undefined` is passed as state
-function noteReducer(state = initialState, action) {
+function noteReducer(state = [], action) {
   switch (action.type) {
+    case 'INIT_NOTES':
+      return action.payload
     case 'NEW_NOTE':
       return state.concat(action.payload)
     case 'TOGGLE_IMPORTANCE':
@@ -46,6 +46,12 @@ export function createNote (content) {
   }
 }
 
+export function initializeNotes (notes) {
+  return {
+    type: 'INIT_NOTES',
+    payload: notes
+  }
+}
 
 export function toggleImportance (id) {
   return {
