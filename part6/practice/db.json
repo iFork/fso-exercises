@@ -1,0 +1,14 @@
+{ 
+  "notes": [
+    {
+      "id": "1",
+      "content": "State management now is in redux",
+      "important": false
+    },
+    {
+      "id": "2",
+      "content": "Actions are dispatched to store",
+      "important": true
+    }
+  ]
+}

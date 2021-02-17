@@ -1,16 +1,5 @@
 
-const initialState = [
-  {
-    id: 1,
-    content: 'State management now is in redux',
-    important: false
-  },
-  {
-    id: 2,
-    content: 'Actions are dispatched to store',
-    important: true
-  }
-]
+const initialState = []
 
 // NOTE: default state is required as redux needs to get initial state when
 // `undefined` is passed as state
