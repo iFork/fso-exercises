@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleImportance } from './reducers/noteReducer'
-
 import Note from './Note';
+import noteService from './services/noteService';
 
 
 function Notes () { 
@@ -28,6 +28,19 @@ function Notes () {
   // TODO: here we pass inline callback with a dispatch to another component.
   // Do we need to use useCallback() or useMemo() to optimize out excessive renders?
   const dispatch = useDispatch();
+
+  async function handleImportanceToggling(note) {
+    // /* const updatedNote = */ await noteService.toggleImportance(note)
+    await noteService.updateNote({
+      ...note,
+      important: !note.important
+    })
+    // TODO: catch errors
+    // TODO: Q: Should we ditch toggleImportance action in favor of more generic
+    // updateNote() action? 
+    // Like we did in noteService ?
+    dispatch(toggleImportance(note.id))
+  }
   return ( 
     <ul>
       {notes.map(note => {
@@ -38,7 +51,7 @@ function Notes () {
             <Note
               note={note}
               handleImportanceToggling={
-                () => dispatch(toggleImportance(note.id))
+                () => handleImportanceToggling(note)
               }
             />
           </li>

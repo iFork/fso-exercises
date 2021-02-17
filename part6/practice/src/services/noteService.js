@@ -17,8 +17,26 @@ async function createNote(noteContent) {
   return response.data
 }
 
+// NOTE: maybe generic updateNote() is enough in place of toggleImportance()
+
+// async function toggleImportance(note) {
+//   const response = await axios.put(`${baseUrl}/${note.id}`, {
+//     ...note,
+//     important: !note.important
+//   })
+//   return response.data
+// }
+async function updateNote(note) {
+  const response = await axios.put(`${baseUrl}/${note.id}`, {
+    ...note,
+  })
+  return response.data
+}
+
 const noteService = {
   getAll,
   createNote,
+  // toggleImportance,
+  updateNote,
 }
  export default noteService
