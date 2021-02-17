@@ -32,17 +32,10 @@ function noteReducer(state = [], action) {
 // in the form of store not recognizing noteReducer function, which makes
 // sense, as during Circular dependency store also gets imported before the
 // reducer is defined.
-function generateId () {
-  return Number((Math.random() * 10000).toFixed(0));
-}
-export function createNote (content) {
+export function createNote (note) {
   return {
     type: 'NEW_NOTE',
-    payload: {
-      id: generateId(),
-      important: false,
-      content
-    }
+    payload: note
   }
 }
 
