@@ -6,19 +6,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import App from './App';
 import noteReducer from './reducers/noteReducer';
 import filterReducer from './reducers/filterReducer';
-
+import noteService from './services/noteService'
 
 // Steps:
-// import redux (createStore, combineReducers) -- in index?
-// define reducer funcs
-// define action creators along with a reducer
-// combine reducers w/ a combineReducers() to have a complex/namespaced state
-// create store w/ (combined) reducers callback
-// wrap root component by <Provider> of react-redux and pass store as its prop.
-// in component:
-// useSelector() hook of react-redux to get slices of state (like as namespaced
-// by combineReducers()) and subscribe component with store.
-// useDispatch() hook of redux to dispatch actions (via action creators)
+// wire up json-server (bd.json, npm script)
+// install axios
+// add data fetching/API-communication services under services folder, use axios
 
 const reducers = combineReducers({
   notes: noteReducer,
@@ -33,6 +26,9 @@ const store = createStore(
   composeWithDevTools()
 );
 
+// test noteService
+noteService.getAll()
+  .then((resp) => console.log(resp))
 
 
 // NOTE: wrapping render in renderApp() to pass a callback to store.subscribe() 
