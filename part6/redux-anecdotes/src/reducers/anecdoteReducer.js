@@ -1,6 +1,4 @@
 
-const getId = () => Number((100000 * Math.random()).toFixed(0))
-
 // TODO: Q: Research unnecessary / excessive re-rendering caused by replacing all
 // state in pure reducer. Maybe store slices are for helping with that?
 // e.g. see [Immutable Data | Redux](https://redux.js.org/faq/immutable-data#how-can-immutability-in-your-reducers-cause-components-to-render-unnecessarily)
@@ -44,14 +42,10 @@ export function vote(id) {
   }
 }
 
-export function addAnecdote(content) {
+export function addAnecdote(anecdote) {
   return {
     type: 'ADD_ANECDOTE',
-    payload: {
-      content,
-      id: getId(),
-      votes: 0
-    }
+    payload: anecdote
   }
 }
 
