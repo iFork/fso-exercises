@@ -1,7 +1,8 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import noteReducer from './reducers/noteReducer';
 import filterReducer from './reducers/filterReducer';
+import thunk from 'redux-thunk';
 
 const reducers = combineReducers({
   notes: noteReducer,
@@ -13,7 +14,11 @@ const store = createStore(
   // connect to Redux Dev Tools (extension of Chrome)
   // typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ 
     // && window.__REDUX_DEVTOOLS_EXTENSION__()
-  composeWithDevTools()
+  composeWithDevTools(
+    applyMiddleware(
+      thunk
+    )
+  )
 );
 
 export default store;
