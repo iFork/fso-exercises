@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleImportance } from './reducers/noteReducer'
+import { toggleImportance } from './reducers/noteReducer';
 import Note from './Note';
 import noteService from './services/noteService';
 
@@ -22,7 +22,7 @@ function Notes () {
     return filter === 'important'
       // NOTE: pay attention that value of important is *boolean*, not string
       ? notes.filter(note => note.important)
-      : notes.filter(note => !note.important)
+      : notes.filter(note => !note.important);
 
   });
   // TODO: here we pass inline callback with a dispatch to another component.
@@ -34,12 +34,12 @@ function Notes () {
     await noteService.updateNote({
       ...note,
       important: !note.important
-    })
+    });
     // TODO: catch errors
     // TODO: Q: Should we ditch toggleImportance action in favor of more generic
     // updateNote() action? 
     // Like we did in noteService ?
-    dispatch(toggleImportance(note.id))
+    dispatch(toggleImportance(note.id));
   }
   return ( 
     <ul>
@@ -58,7 +58,7 @@ function Notes () {
         );
       })}
     </ul>
-  )
+  );
 }
 
 export default Notes;

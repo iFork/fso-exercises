@@ -6,7 +6,7 @@ import filterReducer from './reducers/filterReducer';
 const reducers = combineReducers({
   notes: noteReducer,
   filter: filterReducer
-})
+});
 // create store with a reducer callback
 const store = createStore(
   reducers,
@@ -14,6 +14,6 @@ const store = createStore(
   // typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ 
     // && window.__REDUX_DEVTOOLS_EXTENSION__()
   composeWithDevTools()
-)
+);
 
-export default store
+export default store;

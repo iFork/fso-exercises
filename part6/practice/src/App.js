@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import AddNote from './AddNote'
-import Notes from './Notes'
-import VisibilityFilter from './VisibilityFilter'
+import AddNote from './AddNote';
+import Notes from './Notes';
+import VisibilityFilter from './VisibilityFilter';
 import { initializeNotes } from './reducers/noteReducer';
-import noteService from './services/noteService'
+import noteService from './services/noteService';
 
 function App() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // async function init() {
@@ -18,8 +18,8 @@ function App() {
     //
     // ar, alternatively use .then instead of async/await
     noteService.getAll()
-      .then(notes => dispatch(initializeNotes(notes)))
-  }, [dispatch]) // dispatch has stable identity, so this shell run only once
+      .then(notes => dispatch(initializeNotes(notes)));
+  }, [dispatch]); // dispatch has stable identity, so this shell run only once
 
   return (
     <div className="App">

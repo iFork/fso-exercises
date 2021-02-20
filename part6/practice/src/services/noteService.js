@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 // axios
 // json-server
 
-const baseUrl = 'http://localhost:3001/notes'
+const baseUrl = 'http://localhost:3001/notes';
 async function getAll() {
-  const response = await axios.get(baseUrl)
-  return response.data
+  const response = await axios.get(baseUrl);
+  return response.data;
 }
 
 async function createNote(noteContent) {
@@ -13,8 +13,8 @@ async function createNote(noteContent) {
     content: noteContent,
     important: false,
     // id shell be managed by server
-  })
-  return response.data
+  });
+  return response.data;
 }
 
 // NOTE: maybe generic updateNote() is enough in place of toggleImportance()
@@ -29,8 +29,8 @@ async function createNote(noteContent) {
 async function updateNote(note) {
   const response = await axios.put(`${baseUrl}/${note.id}`, {
     ...note,
-  })
-  return response.data
+  });
+  return response.data;
 }
 
 const noteService = {
@@ -38,5 +38,5 @@ const noteService = {
   createNote,
   // toggleImportance,
   updateNote,
-}
- export default noteService
+};
+ export default noteService;

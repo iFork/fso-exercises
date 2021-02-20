@@ -4,19 +4,19 @@
 function noteReducer(state = [], action) {
   switch (action.type) {
     case 'INIT_NOTES':
-      return action.payload
+      return action.payload;
     case 'NEW_NOTE':
-      return state.concat(action.payload)
+      return state.concat(action.payload);
     case 'TOGGLE_IMPORTANCE':
       const idToChange = action.payload.id;
-      let [ noteToChange ] = state.filter(note => note.id === idToChange)
+      let [ noteToChange ] = state.filter(note => note.id === idToChange);
       let changedNote = {
         ...noteToChange,
         important: !noteToChange.important
-      }
+      };
       return state.map(note => {
-        return note.id === idToChange ? changedNote : note
-      })
+        return note.id === idToChange ? changedNote : note;
+      });
     case 'DELETE_ALL':
       return [];
     default:
@@ -36,14 +36,14 @@ export function createNote (note) {
   return {
     type: 'NEW_NOTE',
     payload: note
-  }
+  };
 }
 
 export function initializeNotes (notes) {
   return {
     type: 'INIT_NOTES',
     payload: notes
-  }
+  };
 }
 
 export function toggleImportance (id) {
@@ -52,7 +52,7 @@ export function toggleImportance (id) {
     payload: {
       id
     }
-  }
+  };
 }
 
 export default noteReducer;

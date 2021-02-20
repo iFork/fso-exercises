@@ -3,7 +3,7 @@ function Note ({ note, handleImportanceToggling }) {
     <div onClick={handleImportanceToggling}>
       {note.content} {note.important ? <strong>Important</strong> : ''}
     </div>
-  )
+  );
 }
 
 export default Note;

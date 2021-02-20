@@ -26,7 +26,7 @@ function counterReducer(state = 0, action) {
 }
 
 // create store with a reducer callback
-let store = createStore(counterReducer)
+let store = createStore(counterReducer);
 
 
 function App() {
@@ -57,7 +57,7 @@ function renderApp() {
       <App />
     </React.StrictMode>,
     document.getElementById('root')
-  )
+  );
 }
 
 // first render

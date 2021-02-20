@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
-import { createNote } from './reducers/noteReducer'
-import noteService from './services/noteService'
+import { createNote } from './reducers/noteReducer';
+import noteService from './services/noteService';
 
 function AddNote () { 
   // this is *uncontrolled form*, in react terms, since source of truth is DOM,
@@ -20,7 +20,7 @@ function AddNote () {
     // or, alternatively, using *createRef() or callback refs* to hold a reference
     // to a specific DOM node.
     // TODO: Q: Check for null noteInput or not?
-    const newNote = await noteService.createNote(noteInput.value)
+    const newNote = await noteService.createNote(noteInput.value);
     dispatch(createNote(newNote));
     noteInput.value = '';
   }
@@ -36,7 +36,7 @@ function AddNote () {
         Add note
       </button>
     </form>
-  )
+  );
 }
 
 export default AddNote;

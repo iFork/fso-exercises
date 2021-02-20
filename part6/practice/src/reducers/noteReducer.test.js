@@ -28,7 +28,7 @@ describe('Note app', () => {
       // expect(state).toEqual([]); <-- this tests deep-freez utility, not our code
       expect(newState).toContainEqual(action.payload);
       expect(newState).toHaveLength(1);
-    })
+    });
     test('Toggling important of note w/ action TOGGLE_IMPORTANCE', () => {
       let state = [ 
         {
@@ -47,16 +47,16 @@ describe('Note app', () => {
         payload: {
           id: 1
         }
-      }
+      };
       let oldState = [ ...state ]; // this makes sense only when we want to
       // test also deep-freez utility
       // Otherwise, do just `deepFreeze(state)`, `oldState` is superfluous
       deepFreeze(oldState);
-      let newState = noteReducer(oldState, action)
+      let newState = noteReducer(oldState, action);
       // assert non-changed note and changed note
       let originalNote = state[0];
       let changedNote = newState[0];
-      let untouchedNoteBefore = state[1]
+      let untouchedNoteBefore = state[1];
       expect(oldState).toEqual(state);
       expect(changedNote)
         .toEqual({
@@ -65,7 +65,7 @@ describe('Note app', () => {
           id: 1,
           content: 'State management now is in redux',
           important: true
-        })
+        });
       // or, equivalently
       expect(newState)
         .toContainEqual({
@@ -74,9 +74,9 @@ describe('Note app', () => {
           // id: 1,
           // content: 'State management now is in redux',
           // important: true
-        })
+        });
       expect(newState)
         .toContainEqual(untouchedNoteBefore);
-    })
-  })
-})
+    });
+  });
+});
