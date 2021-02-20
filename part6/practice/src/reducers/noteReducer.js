@@ -1,3 +1,4 @@
+import noteService from "../services/noteService";
 
 // NOTE: default state is required as redux needs to get initial state when
 // `undefined` is passed as state
@@ -39,10 +40,13 @@ export function createNote (note) {
   };
 }
 
-export function initializeNotes (notes) {
-  return {
-    type: 'INIT_NOTES',
-    payload: notes
+export function initializeNotes () {
+  return async function (dispatch) { 
+    const notes = await noteService.getAll();
+    dispatch({
+      type: 'INIT_NOTES',
+      payload: notes
+    });
   };
 }
 
