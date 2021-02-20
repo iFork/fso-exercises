@@ -26,17 +26,18 @@ function noteReducer(state = [], action) {
 }
 
 // Action creators
-// NOTE: Action creators should only return action objects, *without dispatching*
+// OBSOLETE NOTE: Action creators should only return action objects, *without dispatching*
 // actions to store. Otherwise *CIRCULAR dependency* comes into play 
 // (reducer <-> store) with its troubles.  
-// If we import here store we get CIRCULAR dependency which causes RUNTIME ERROR
-// in the form of store not recognizing noteReducer function, which makes
-// sense, as during Circular dependency store also gets imported before the
-// reducer is defined.
+// SOLUTION: use redux-tunk and return thunks from action creators which accept
+// dispatch as param from dispatch() they will be passed to.
 export function createNote (note) {
-  return {
-    type: 'NEW_NOTE',
-    payload: note
+  return async function (dispatch) { 
+    const newNote = await noteService.createNote(note);
+    dispatch({
+      type: 'NEW_NOTE',
+      payload: newNote
+    });
   };
 }
 
