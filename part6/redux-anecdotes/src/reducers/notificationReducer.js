@@ -21,21 +21,31 @@ export default function notificationReducer (
   }
 }
 
+// TODO: removing is buggy. When it is called it clears everything
+// irrespective when it was added.
+// Better implement notifications with id-s and remove by id?
+function popNotification (text, duration) {
+  return async function (dispatch) {
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      payload: text
+    });
+    setTimeout(() => dispatch({
+      type: 'REMOVE_NOTIFICATION'
+    }), duration);
+  };
+}
 
 export function setVoteNotification (anecdoteContent) {
-  return {
-    type: 'SET_NOTIFICATION',
-    payload: `you have voted for '${anecdoteContent}'`
-  };
+  const text = `you have voted for '${anecdoteContent}'`;
+  return popNotification(text, 5000);
 }
 export function setNewAnecdoteNotification (anecdoteContent) {
-  return {
-    type: 'SET_NOTIFICATION',
-    payload: `you have added '${anecdoteContent}'`
-  };
+  const text = `you have added '${anecdoteContent}'`;
+  return popNotification(text, 5000);
 }
-export function removeNotification () {
-  return {
-    type: 'REMOVE_NOTIFICATION'
-  };
-}
+// export function removeNotification () {
+//   return {
+//     type: 'REMOVE_NOTIFICATION'
+//   };
+// }
