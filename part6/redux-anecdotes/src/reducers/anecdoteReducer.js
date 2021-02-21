@@ -13,6 +13,7 @@ const reducer = (state = [], action) => {
       const anecdoteToChange = state.find(anecdote => {
         return anecdote.id === idToChange;
       });
+      console.log({ anecdoteToChange });
       const changedAnecdote = {
         ...anecdoteToChange,
         votes: anecdoteToChange.votes + 1
@@ -46,10 +47,18 @@ export function vote(id) {
   };
 }
 
-export function addAnecdote(anecdote) {
-  return {
-    type: 'ADD_ANECDOTE',
-    payload: anecdote
+export function addAnecdote(anecdoteContent) {
+  return async function (dispatch) { 
+    const anecdoteCreated = await anecdoteService.create({
+      content: anecdoteContent,
+      // BUG FIX: typo in field name ('vote' in place of 'votes'), voting got
+      // 'NaN' bug.
+      votes: 0
+    });
+    dispatch({
+      type: 'ADD_ANECDOTE',
+      payload: anecdoteCreated
+    });
   };
 }
 
