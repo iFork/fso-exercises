@@ -21,9 +21,16 @@ async function create(anecdote) {
   return resp.data;
 }
 
+async function update (anecdote) {
+  // NOTE: Precondition: json-server ignores `id` in payload of put request.
+  const resp = await axios.put(`${baseUrl}/${anecdote.id}`, anecdote);
+  return resp.data;
+}
+
 const anecdoteService = {
   getAll,
   create,
+  update,
 };
 
 export default anecdoteService;

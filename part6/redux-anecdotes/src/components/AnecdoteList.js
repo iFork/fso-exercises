@@ -16,7 +16,7 @@ function AnecdoteList () {
   const dispatch = useDispatch();
   
   const handleVote = (anecdote) => {
-    dispatch(vote(anecdote.id));
+    dispatch(vote(anecdote));
     dispatch(setVoteNotification(anecdote.content));
     // TODO: removing is buggy. When it is called it clears everything
     // irrespective when it was added.

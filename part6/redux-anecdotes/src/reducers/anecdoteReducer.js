@@ -8,21 +8,25 @@ const reducer = (state = [], action) => {
   switch (action.type) {
     case 'INIT_ANECDOTES':
       return action.payload;
-    case 'VOTE':
-      const idToChange = action.payload.id;
-      const anecdoteToChange = state.find(anecdote => {
-        return anecdote.id === idToChange;
-      });
-      console.log({ anecdoteToChange });
-      const changedAnecdote = {
-        ...anecdoteToChange,
-        votes: anecdoteToChange.votes + 1
-      };
-      return state.map(anecdote => {
-        return anecdote.id === idToChange ? changedAnecdote : anecdote;
-      });
+    // case 'VOTE':
+    //   const idToChange = action.payload.id;
+    //   const anecdoteToChange = state.find(anecdote => {
+    //     return anecdote.id === idToChange;
+    //   });
+    //   console.log({ anecdoteToChange });
+    //   const changedAnecdote = {
+    //     ...anecdoteToChange,
+    //     votes: anecdoteToChange.votes + 1
+    //   };
+    //   return state.map(anecdote => {
+    //     return anecdote.id === idToChange ? changedAnecdote : anecdote;
+    //   });
     case 'ADD_ANECDOTE':
       return state.concat(action.payload);
+    case 'UPDATE':
+      return state.map(anecdote => {
+        return anecdote.id === action.payload.id ? action.payload : anecdote;
+      });
     default:
       return state;
   }
@@ -40,10 +44,18 @@ export function initAnecdotes() {
     });
   };
 }
-export function vote(id) {
-  return {
-    type: 'VOTE',
-    payload: { id }
+export function vote(anecdote) {
+  return async function (dispatch) {
+    const votedAnecdote = {
+      ...anecdote,
+      votes: anecdote.votes + 1
+    };
+    const changedAnecdote = await anecdoteService.update(votedAnecdote);
+    // Q: vote dispatch by id ? or just updated payload (whole body) from server?
+    dispatch({
+      type: 'UPDATE',
+      payload: changedAnecdote
+    });
   };
 }
 
