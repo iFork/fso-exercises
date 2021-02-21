@@ -1,3 +1,4 @@
+import anecdoteService from '../services/anecdoteService';
 
 // TODO: Q: Research unnecessary / excessive re-rendering caused by replacing all
 // state in pure reducer. Maybe store slices are for helping with that?
@@ -29,10 +30,13 @@ const reducer = (state = [], action) => {
 // action creators
 // TODO: import action types as (predefined) constants (from actionTypes.js)
 // for easy reuse
-export function initAnecdotes(anecdotes) {
-  return {
-    type: 'INIT_ANECDOTES',
-    payload: anecdotes
+export function initAnecdotes() {
+  return async function (dispatch) { 
+    const anecdotes = await anecdoteService.getAll();
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      payload: anecdotes
+    });
   };
 }
 export function vote(id) {
