@@ -1,5 +1,5 @@
 
-const initialNotification = 'Welcome!'
+const initialNotification = 'Welcome!';
 
 // NOTE: Discuss: Alternative way is listening for 'VOTE' and 'ADD_ANECDOTE'
 // actions (their action creator is in anecdotesReducer) also here and setting
@@ -13,11 +13,11 @@ export default function notificationReducer (
 ) {
   switch (action.type) {
     case 'SET_NOTIFICATION':
-      return action.payload
+      return action.payload;
     case 'REMOVE_NOTIFICATION':
-      return ''
+      return '';
     default:
-      return state
+      return state;
   }
 }
 
@@ -26,16 +26,16 @@ export function setVoteNotification (anecdoteContent) {
   return {
     type: 'SET_NOTIFICATION',
     payload: `you have voted for '${anecdoteContent}'`
-  }
+  };
 }
 export function setNewAnecdoteNotification (anecdoteContent) {
   return {
     type: 'SET_NOTIFICATION',
     payload: `you have added '${anecdoteContent}'`
-  }
+  };
 }
 export function removeNotification () {
   return {
     type: 'REMOVE_NOTIFICATION'
-  }
+  };
 }

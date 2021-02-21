@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import {useDispatch} from 'react-redux';
 import Notification from './components/Notification';
-import AnecdoteForm from './components/AnecdoteForm'
-import AnecdoteList from './components/AnecdoteList'
-import Filter from './components/Filter'
+import AnecdoteForm from './components/AnecdoteForm';
+import AnecdoteList from './components/AnecdoteList';
+import Filter from './components/Filter';
 import anecdoteService from './services/anecdoteService';
 import {initAnecdotes} from './reducers/anecdoteReducer';
 
 
 const App = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // initialize store state from server
   useEffect(() => {
     anecdoteService.getAll()
-      .then((anecdotes) => dispatch(initAnecdotes(anecdotes)))
-  }, [dispatch])
+      .then((anecdotes) => dispatch(initAnecdotes(anecdotes)));
+  }, [dispatch]);
 
   return (
     <div>
@@ -23,7 +23,7 @@ const App = () => {
       <AnecdoteList />
       <AnecdoteForm />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

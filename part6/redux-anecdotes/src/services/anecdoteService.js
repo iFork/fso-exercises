@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const baseUrl = 'http://localhost:3001/anecdotes'
+const baseUrl = 'http://localhost:3001/anecdotes';
 
 async function getAll() {
-  const resp = await axios.get(baseUrl)/*.data */ // <- NOTE: Remember to honor
+  const resp = await axios.get(baseUrl);/*.data */ // <- NOTE: Remember to honor
   // async calls before traversing response.
-  return resp.data
+  return resp.data;
 }
 
 
@@ -17,13 +17,13 @@ async function getAll() {
  * @return {Promise<{id: string, content: string, vote: number}>}
  */
 async function create(anecdote) {
-  const resp = await axios.post(baseUrl, anecdote)
-  return resp.data
+  const resp = await axios.post(baseUrl, anecdote);
+  return resp.data;
 }
 
 const anecdoteService = {
   getAll,
   create,
-}
+};
 
-export default anecdoteService
+export default anecdoteService;
