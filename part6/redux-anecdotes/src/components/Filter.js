@@ -1,13 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { setFilter } from '../reducers/filterReducer';
 
-export default function Filter () {
-  const dispatch = useDispatch();
-
+function Filter ({ setFilter }) {
   const handleFilter = (evt) => {
     console.log(evt.target.value);
-    dispatch(setFilter(evt.target.value));
+    setFilter(evt.target.value);
   };
 
   const style = {
@@ -24,3 +22,8 @@ export default function Filter () {
     </div>
   );
 }
+
+const mapDispatchToProps = {
+  setFilter,
+};
+export default connect(null, mapDispatchToProps)(Filter);
