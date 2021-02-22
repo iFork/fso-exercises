@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {useDispatch} from 'react-redux';
+import {connect} from 'react-redux';
 import Notification from './components/Notification';
 import AnecdoteForm from './components/AnecdoteForm';
 import AnecdoteList from './components/AnecdoteList';
@@ -7,12 +7,13 @@ import Filter from './components/Filter';
 import {initAnecdotes} from './reducers/anecdoteReducer';
 
 
-const App = () => {
-  const dispatch = useDispatch();
+const App = ({ initAnecdotes }) => {
   // initialize store state from server
   useEffect(() => {
-    dispatch(initAnecdotes());
-  }, [dispatch]);
+    initAnecdotes();
+    // console.log('in effect hook');
+  }, [initAnecdotes]); // dispatch mapped to prop (initAnecdotes) has stable
+  // identity like dispatch from useDispatch hook. 
 
   return (
     <div>
@@ -24,4 +25,7 @@ const App = () => {
   );
 };
 
-export default App;
+const mapDispatchToProps = {
+  initAnecdotes,
+};
+export default connect(null, mapDispatchToProps)(App);
