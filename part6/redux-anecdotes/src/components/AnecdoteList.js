@@ -1,20 +1,14 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { vote } from '../reducers/anecdoteReducer';
 import { setVoteNotification } from '../reducers/notificationReducer';
 
 
-function AnecdoteList () { 
-  const anecdotes = useSelector(({ anecdotes, filter }) => {
-    if (filter === '')
-      return anecdotes;
-    return anecdotes.filter(a => a.content.toLowerCase().includes(filter));
-  });
-  const dispatch = useDispatch();
+function AnecdoteList ({ anecdotes, vote, setVoteNotification }) { 
   
   const handleVote = (anecdote) => {
-    dispatch(vote(anecdote));
-    dispatch(setVoteNotification(anecdote.content));
+    vote(anecdote);
+    setVoteNotification(anecdote.content);
   };  
 
   // sort by descending order
@@ -38,4 +32,18 @@ function AnecdoteList () {
   );
 }
 
-export default AnecdoteList;
+function mapStateToProps({ filter, anecdotes }) {
+  return {
+    anecdotes: ( 
+      filter === ''
+      ? anecdotes
+      : anecdotes.filter(a => {
+        return a.content.toLowerCase().includes(filter.toLowerCase());
+      })
+    )};
+}
+const mapDispatchToProps = {
+  vote,
+  setVoteNotification,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList);
