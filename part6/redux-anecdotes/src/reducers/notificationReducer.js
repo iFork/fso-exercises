@@ -21,18 +21,28 @@ export default function notificationReducer (
   }
 }
 
-// TODO: removing is buggy. When it is called it clears everything
+// removing notification was buggy. When it is called it clears everything
 // irrespective when it was added.
-// Better implement notifications with id-s and remove by id?
+// FIX: Better implement notifications with id-s and remove by id?
+// Or, even simpler, clear previous timeout w/ clearTimeout(lastTimeoutId)
+
+var lastTimeoutId; 
+// since this is ES module, then this is module global.
+// Does it make sense to put lastTimeoutId in store ? IMO, no.
+
 function popNotification (text, duration) {
   return async function (dispatch) {
     dispatch({
       type: 'SET_NOTIFICATION',
       payload: text
     });
-    setTimeout(() => dispatch({
+    const timeoutId = setTimeout(() => dispatch({
       type: 'REMOVE_NOTIFICATION'
     }), duration);
+    // if there is previous timeoutId saved, clearTimeout() on it and store the
+    // new one
+    if (lastTimeoutId) clearTimeout(lastTimeoutId);
+    lastTimeoutId = timeoutId;
   };
 }
 
