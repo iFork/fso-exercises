@@ -1,11 +1,9 @@
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { createNote } from './reducers/noteReducer';
 
-function AddNote () { 
+function AddNote ({ createNote }) { 
   // this is *uncontrolled form*, in react terms, since source of truth is DOM,
   // not react state (i.e. value of input node does not come from prop/state)
-  // TODO: harmonize - const or let ?? 
-  const dispatch = useDispatch();
   let noteInput = null;
   function handleSubmit (e) {
     // NOTE: if no `preventDefault`, page is reloaded and if store is not
@@ -16,10 +14,11 @@ function AddNote () {
     // Or, alternatively, using *createRef() or callback refs* to hold a reference
     // to a specific DOM node.
     // TODO: Q: Check for null noteInput or not?
-    // TODO: Research: Q: how dispatch() waits for async calls inside thunk to
+    // TODO: Research: Q: how dispatch() (or prop mapped to dispatch, in this
+    // version) waits for async calls inside thunk to
     // finish before proceeding? (next line nullifies its param and it works like
     // synchronous flow.)
-    dispatch(createNote(noteInput.value));
+    createNote(noteInput.value);
     noteInput.value = '';
   }
 
@@ -37,4 +36,5 @@ function AddNote () {
   );
 }
 
-export default AddNote;
+const mapDispatchToProps  =  { createNote };
+export default connect(null, mapDispatchToProps)(AddNote);
