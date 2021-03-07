@@ -3,6 +3,7 @@ import {
   Switch,
   Route,
   Link,
+  Redirect,
 } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
@@ -54,7 +55,7 @@ function App() {
           <Notes notes={notes}/>
         </Route>
         <Route path="/users">
-          <Users />
+          { user ? <Users /> : <Redirect to="/login" />}
         </Route>
         <Route path="/">
           <Home />
