@@ -7,17 +7,20 @@ import {
 import Home from './components/Home';
 import Users from './components/Users';
 import Notes from './components/Notes';
+import Note from './components/Note';
 
 const notes = [
   {
     content: 'first note',
     id: 1,
-    important: true
+    important: true,
+    user: 'Amy'
   }, 
   {
     content: 'second note',
     id: 2,
-    important: false
+    important: false,
+    user: 'Bob'
   }
 ];
 
@@ -35,6 +38,9 @@ function App() {
       </div>
 
       <Switch>
+        <Route path="/notes/:id">
+          <Note notes={notes}/>
+        </Route>
         <Route path="/notes">
           <Notes notes={notes}/>
         </Route>

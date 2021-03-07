@@ -1,6 +1,4 @@
-import Note from './Note';
-// import noteService from './services/noteService';
-
+import { Link } from 'react-router-dom';
 
 export default function Notes ({ notes }) { 
   return ( 
@@ -8,9 +6,7 @@ export default function Notes ({ notes }) {
       {notes.map(note => {
         return (
           <li key={note.id}>
-            <Note
-              note={note}
-            />
+            <Link to={`/notes/${note.id}`}>{note.content}</Link>
           </li>
         );
       })}
