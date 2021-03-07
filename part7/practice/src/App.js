@@ -1,4 +1,9 @@
-import React, { useState }  from 'react';
+import React  from 'react';
+import {
+  Switch,
+  Route,
+  Link,
+} from 'react-router-dom';
 import Home from './components/Home';
 import Users from './components/Users';
 import Notes from './components/Notes';
@@ -17,30 +22,33 @@ const notes = [
 ];
 
 function App() {
-  const [ page, setPage ] = useState('home');
 
-  const toPage = (page) => (evt) => {
-    evt.preventDefault();
-    setPage(page);
-  }
-  
-  const pageContent = (page) => {
-    if (page === 'home') { return <Home /> }
-    if (page === 'notes') { return <Notes notes={notes} /> }
-    if (page === 'users') { return <Users /> }
-  }
   const padding = {
     padding: 3
   }
   return (
     <div className="App">
-      <header className="App-header">Notes</header>
-      <a href="" style={padding} onClick={toPage('home')}>Home</a>
-      <a href="" style={padding} onClick={toPage('notes')}>Notes</a>
-      <a href="" style={padding} onClick={toPage('users')}>Users</a>
-      {pageContent(page)}
+      <div>
+        <Link style={padding} to="/">Home</Link>
+        <Link style={padding} to="/notes">Notes</Link>
+        <Link style={padding} to="/users">Users</Link>
+      </div>
+
+      <Switch>
+        <Route path="/notes">
+          <Notes notes={notes}/>
+        </Route>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+      <div className="footer">
+        <i>A fine footer</i>
+      </div>
     </div>
   );
 }
-
 export default App;
