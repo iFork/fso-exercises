@@ -1,10 +1,11 @@
-import React  from 'react';
+import React, { useState }  from 'react';
 import {
   Switch,
   Route,
   Link,
 } from 'react-router-dom';
 import Home from './components/Home';
+import Login from './components/Login';
 import Users from './components/Users';
 import Notes from './components/Notes';
 import Note from './components/Note';
@@ -25,7 +26,11 @@ const notes = [
 ];
 
 function App() {
+  const [ user, setUser ] = useState(null);
 
+  const login = (user) => {
+    setUser(user);
+  }
   const padding = {
     padding: 3
   }
@@ -35,9 +40,13 @@ function App() {
         <Link style={padding} to="/">Home</Link>
         <Link style={padding} to="/notes">Notes</Link>
         <Link style={padding} to="/users">Users</Link>
+        { user ? <em>logged in as {user}</em> : <Link to="/login">Login</Link> }
       </div>
 
       <Switch>
+        <Route path="/login">
+          <Login onLogin={login} />
+        </Route>
         <Route path="/notes/:id">
           <Note notes={notes}/>
         </Route>
