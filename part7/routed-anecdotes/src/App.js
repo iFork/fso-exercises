@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import {
+  Switch,
+  Route,
+} from 'react-router-dom';
 import Menu from './components/Menu';
 import AnecdoteList from './components/AnecdoteList';
 import About from './components/About';
@@ -50,9 +54,19 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+
+      <Switch>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route exact path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
+
       <Footer />
     </div>
   )
