@@ -4,6 +4,7 @@ import {
   Route,
   Link,
   Redirect,
+  useRouteMatch,
 } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
@@ -29,6 +30,11 @@ const notes = [
 function App() {
   const [ user, setUser ] = useState(null);
 
+  const match = useRouteMatch('/notes/:id')
+  const note = match
+    ? notes.find(n => n.id === Number(match.params.id))
+    : null;
+
   const login = (user) => {
     setUser(user);
   }
@@ -49,7 +55,7 @@ function App() {
           <Login onLogin={login} />
         </Route>
         <Route path="/notes/:id">
-          <Note notes={notes}/>
+          <Note note={note}/>
         </Route>
         <Route path="/notes">
           <Notes notes={notes}/>
