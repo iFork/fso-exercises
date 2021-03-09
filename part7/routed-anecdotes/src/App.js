@@ -33,9 +33,15 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const popNotification = (msg) => {
+    setNotification(msg)
+    setTimeout(() => setNotification(''), 5000)
+  }
+
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    popNotification(`a new anecdote ${anecdote.content} created!`)
   }
 
   const anecdoteById = (id) =>
@@ -61,6 +67,8 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+
+      <div>{notification}</div>
 
       <Switch>
         <Route path="/about">
