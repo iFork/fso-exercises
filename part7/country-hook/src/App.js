@@ -18,13 +18,19 @@ const useField = (type) => {
 const useCountry = (name) => {
   const [country, setCountry] = useState(null)
 
-  // TODO:
-  // country.data
-  // country.found
   useEffect(() => {
-  }) 
+    const baseUrl = 'https://restcountries.eu/rest/v2'
+    axios.get(`${baseUrl}/name/${name}?fullText=true`)
+      .then((resp) => setCountry({
+        data: resp.data[0],
+        found: true,
+      }))
+      .catch(() => setCountry({
+          found: false
+        })
+      )
+  }, [name]) // <-- Remeber to have dependency list to avoid infinite requests
 
-  console.log({ country });
   return country
 }
 
