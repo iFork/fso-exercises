@@ -20,15 +20,26 @@ const useField = (type) => {
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  // TODO:
-  // ...
-
-  const create = (resource) => {
-    // ...
+  const create = async (resource) => {
+    const res = await axios.post(baseUrl, resource);
+    setResources((previous) => previous.concat(res.data))
   }
 
+  // const getAll = async () => {
+  //   const res = await axios.get(baseUrl);
+  //   setResources(res.data)
+  // }
+
+  // init state. 
+  // Q: Does this fully replace getAll() ?
+  useEffect(() => {
+    axios.get(baseUrl)
+        .then(res => setResources(res.data))
+  }, [baseUrl])
+
   const service = {
-    create
+    create,
+    // getAll,
   }
 
   return [
