@@ -42,7 +42,7 @@ function App() {
     padding: 3
   }
   return (
-    <div className="App">
+    <div className="App container">
       <div>
         <Link style={padding} to="/">Home</Link>
         <Link style={padding} to="/notes">Notes</Link>
