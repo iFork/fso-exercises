@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom';
+import { Form, Button, Col } from 'react-bootstrap';
 
 export default function Login ({ onLogin }) {
   const history = useHistory();
@@ -10,22 +11,27 @@ export default function Login ({ onLogin }) {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-          username
-          <input name="username" />
-        </label>
-      </div>
-      <div>
-        <label>
-          password
-          <input
-            type="password"
-            name="password" />
-        </label>
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <Form onSubmit={handleLogin}>
+      <Form.Group
+        as={Col}
+        controlId="username">
+        <Form.Label>username</Form.Label>
+        <Form.Control
+          type="text"
+          name="username"
+          htmlSize={2}
+          placeholder="username" />
+      </Form.Group>
+      <Form.Group controlId="password">
+        <Form.Label>password </Form.Label>
+        <Form.Control
+          type="password"
+          name="password" 
+          placeholder="password"
+          htmlSize={6}
+        />
+      </Form.Group>
+      <Button variant="primary" type="submit">login</Button>
+    </Form>
   )
-}
+};
